@@ -20,8 +20,8 @@
     </div>
   </div>
   <div class="hdr-right">
-    <span class="hdr-badge">Jan &ndash; Apr 2026</span>
-    <span class="hdr-badge">4 Sites &bull; 16 Reports</span>
+    <span class="hdr-badge">Jan &ndash; May 2026</span>
+    <span class="hdr-badge">4 Sites &bull; 17 Reports</span>
     <span class="hdr-date">GM Presentation</span>
   </div>
 </header>
@@ -37,7 +37,7 @@
   <select id="fMonth" onchange="applyFilters()">
     <option value="">All Months</option>
     <option value="1">January</option><option value="2">February</option>
-    <option value="3">March</option><option value="4">April</option>
+    <option value="3">March</option><option value="4">April</option><option value="5">May</option>
   </select>
   <label>KDI</label>
   <select id="fKDI" onchange="applyFilters()">
@@ -47,7 +47,7 @@
     <option value="b5">B5 – T&amp;C</option>
   </select>
   <div class="filter-sep"></div>
-  <div class="filter-info">Showing <span id="fCount">16</span> of 16 records</div>
+  <div class="filter-info">Showing <span id="fCount">17</span> of 17 records</div>
   <button class="btn-reset" onclick="resetFilters()">Reset</button>
 </div>
 
@@ -474,6 +474,19 @@
     <td class="num"><strong>1,600</strong></td>
     <td class="num"><span class="badge b-g">0.12%</span></td>
     <td class="num"><span class="badge b-g">99.88%</span></td>
+  </tr><tr data-site="IKN" data-mo="5">
+    <td><span class="badge b-ikn">IKN</span></td>
+    <td>May 2026</td>
+    <td class="num">1,363,911</td>
+    <td class="num">1,329,813</td>
+    <td class="num">-</td>
+    <td class="num">13,280</td>
+    <td class="num">-</td>
+    <td class="num">-</td>
+    <td class="num">-</td>
+    <td class="num"><strong>13,280</strong></td>
+    <td class="num"><span class="badge b-g">1.00%</span></td>
+    <td class="num"><span class="badge b-g">99.00%</span></td>
   </tr><tr data-site="NIH" data-mo="1">
     <td><span class="badge b-nih">NIH</span></td>
     <td>Jan 2026</td>
@@ -538,15 +551,15 @@
 </footer>
 
 <script>
-const SUMMARY = [{"site":"HOAG","month":"Jan","mo":1,"fee":17762.21,"bems":17318.15,"b1":0,"b2":1140,"b3":0,"b4":0,"b5":0,"total":1140,"dedPct":6.42,"perf":93.58},{"site":"HOAG","month":"Feb","mo":2,"fee":17762.21,"bems":17318.15,"b1":0,"b2":1300,"b3":0,"b4":0,"b5":0,"total":1300,"dedPct":7.32,"perf":92.68},{"site":"HOAG","month":"Mar","mo":3,"fee":17762.21,"bems":17318.15,"b1":0,"b2":2200,"b3":0,"b4":0,"b5":0,"total":2200,"dedPct":12.39,"perf":87.61},{"site":"HOAG","month":"Apr","mo":4,"fee":17762.21,"bems":17318.15,"b1":0,"b2":200,"b3":0,"b4":0,"b5":0,"total":200,"dedPct":1.13,"perf":98.87},{"site":"HSA","month":"Jan","mo":1,"fee":278809.58,"bems":271839.34,"b1":0,"b2":4610,"b3":0,"b4":620,"b5":0,"total":5230,"dedPct":1.88,"perf":98.12},{"site":"HSA","month":"Feb","mo":2,"fee":361632.64,"bems":352591.82,"b1":0,"b2":3610,"b3":0,"b4":890,"b5":0,"total":4500,"dedPct":1.24,"perf":98.76},{"site":"HSA","month":"Mar","mo":3,"fee":361632.64,"bems":352591.82,"b1":0,"b2":8670,"b3":0,"b4":830,"b5":0,"total":9500,"dedPct":2.63,"perf":97.37},{"site":"HSA","month":"Apr","mo":4,"fee":361632.64,"bems":352591.82,"b1":0,"b2":9680,"b3":0,"b4":2250,"b5":0,"total":11930,"dedPct":3.3,"perf":96.7},{"site":"IKN","month":"Jan","mo":1,"fee":1474733.1,"bems":1437864.77,"b1":40,"b2":2850,"b3":800,"b4":0,"b5":0,"total":3690,"dedPct":0.25,"perf":99.75},{"site":"IKN","month":"Feb","mo":2,"fee":1363910.93,"bems":1329813.16,"b1":0,"b2":1250,"b3":0,"b4":0,"b5":0,"total":1250,"dedPct":0.09,"perf":99.91},{"site":"IKN","month":"Mar","mo":3,"fee":1363910.93,"bems":1329813.16,"b1":0,"b2":500,"b3":440,"b4":0,"b5":0,"total":940,"dedPct":0.07,"perf":99.93},{"site":"IKN","month":"Apr","mo":4,"fee":1363910.93,"bems":1329813.16,"b1":0,"b2":1600,"b3":0,"b4":0,"b5":0,"total":1600,"dedPct":0.12,"perf":99.88},{"site":"NIH","month":"Jan","mo":1,"fee":786187.46,"bems":766532.78,"b1":14520,"b2":14520,"b3":10600,"b4":15120,"b5":0,"total":54760,"dedPct":7.14,"perf":92.86},{"site":"NIH","month":"Feb","mo":2,"fee":786187.46,"bems":766532.78,"b1":0,"b2":26980,"b3":11030,"b4":4870,"b5":0,"total":42880,"dedPct":5.59,"perf":94.41},{"site":"NIH","month":"Mar","mo":3,"fee":791994.51,"bems":772194.65,"b1":0,"b2":23630,"b3":0,"b4":5780,"b5":0,"total":29410,"dedPct":3.81,"perf":96.19},{"site":"NIH","month":"Apr","mo":4,"fee":791994.51,"bems":772194.65,"b1":0,"b2":27000,"b3":10,"b4":5680,"b5":0,"total":32690,"dedPct":4.23,"perf":95.77}];
+const SUMMARY = [{"site":"HOAG","month":"Jan","mo":1,"fee":17762.21,"bems":17318.15,"b1":0,"b2":1140,"b3":0,"b4":0,"b5":0,"total":1140,"dedPct":6.42,"perf":93.58},{"site":"HOAG","month":"Feb","mo":2,"fee":17762.21,"bems":17318.15,"b1":0,"b2":1300,"b3":0,"b4":0,"b5":0,"total":1300,"dedPct":7.32,"perf":92.68},{"site":"HOAG","month":"Mar","mo":3,"fee":17762.21,"bems":17318.15,"b1":0,"b2":2200,"b3":0,"b4":0,"b5":0,"total":2200,"dedPct":12.39,"perf":87.61},{"site":"HOAG","month":"Apr","mo":4,"fee":17762.21,"bems":17318.15,"b1":0,"b2":200,"b3":0,"b4":0,"b5":0,"total":200,"dedPct":1.13,"perf":98.87},{"site":"HSA","month":"Jan","mo":1,"fee":278809.58,"bems":271839.34,"b1":0,"b2":4610,"b3":0,"b4":620,"b5":0,"total":5230,"dedPct":1.88,"perf":98.12},{"site":"HSA","month":"Feb","mo":2,"fee":361632.64,"bems":352591.82,"b1":0,"b2":3610,"b3":0,"b4":890,"b5":0,"total":4500,"dedPct":1.24,"perf":98.76},{"site":"HSA","month":"Mar","mo":3,"fee":361632.64,"bems":352591.82,"b1":0,"b2":8670,"b3":0,"b4":830,"b5":0,"total":9500,"dedPct":2.63,"perf":97.37},{"site":"HSA","month":"Apr","mo":4,"fee":361632.64,"bems":352591.82,"b1":0,"b2":9680,"b3":0,"b4":2250,"b5":0,"total":11930,"dedPct":3.3,"perf":96.7},{"site":"IKN","month":"Jan","mo":1,"fee":1474733.1,"bems":1437864.77,"b1":40,"b2":2850,"b3":800,"b4":0,"b5":0,"total":3690,"dedPct":0.25,"perf":99.75},{"site":"IKN","month":"Feb","mo":2,"fee":1363910.93,"bems":1329813.16,"b1":0,"b2":1250,"b3":0,"b4":0,"b5":0,"total":1250,"dedPct":0.09,"perf":99.91},{"site":"IKN","month":"Mar","mo":3,"fee":1363910.93,"bems":1329813.16,"b1":0,"b2":500,"b3":440,"b4":0,"b5":0,"total":940,"dedPct":0.07,"perf":99.93},{"site":"IKN","month":"Apr","mo":4,"fee":1363910.93,"bems":1329813.16,"b1":0,"b2":1600,"b3":0,"b4":0,"b5":0,"total":1600,"dedPct":0.12,"perf":99.88},{"site":"IKN","month":"May","mo":5,"fee":1363910.93,"bems":1329813.16,"b1":0,"b2":13280,"b3":0,"b4":0,"b5":0,"total":13280,"dedPct":1.00,"perf":99.00},{"site":"NIH","month":"Jan","mo":1,"fee":786187.46,"bems":766532.78,"b1":14520,"b2":14520,"b3":10600,"b4":15120,"b5":0,"total":54760,"dedPct":7.14,"perf":92.86},{"site":"NIH","month":"Feb","mo":2,"fee":786187.46,"bems":766532.78,"b1":0,"b2":26980,"b3":11030,"b4":4870,"b5":0,"total":42880,"dedPct":5.59,"perf":94.41},{"site":"NIH","month":"Mar","mo":3,"fee":791994.51,"bems":772194.65,"b1":0,"b2":23630,"b3":0,"b4":5780,"b5":0,"total":29410,"dedPct":3.81,"perf":96.19},{"site":"NIH","month":"Apr","mo":4,"fee":791994.51,"bems":772194.65,"b1":0,"b2":27000,"b3":10,"b4":5680,"b5":0,"total":32690,"dedPct":4.23,"perf":95.77}];
 const SITES = ["HOAG","HSA","IKN","NIH"];
-const MONTHS = ["Jan","Feb","Mar","Apr"];
+const MONTHS = ["Jan","Feb","Mar","Apr","May"];
 const C = {"HOAG":"#4f7ef8","HSA":"#22d3ee","IKN":"#4ade80","NIH":"#c084fc"};
 const EQUIP = {"HOAG":[{"cat":"Dental Equipment","count":9,"deduction":830},{"cat":"Defibrillator","count":5,"deduction":530},{"cat":"Patient Monitor","count":3,"deduction":200},{"cat":"Ultrasound","count":1,"deduction":90},{"cat":"Other","count":2,"deduction":190}],"HSA":[{"cat":"Ventilator","count":8,"deduction":4820},{"cat":"Defibrillator","count":6,"deduction":2100},{"cat":"Infusion Pump","count":5,"deduction":990},{"cat":"ECG Machine","count":4,"deduction":660},{"cat":"Ultrasound","count":3,"deduction":1500},{"cat":"Other","count":12,"deduction":3990}],"IKN":[{"cat":"CT Scanner","count":6,"deduction":2700},{"cat":"Analyzer (Lab)","count":5,"deduction":1350},{"cat":"Sphygmomanometer","count":5,"deduction":200},{"cat":"Infusion Pump","count":4,"deduction":120},{"cat":"Other","count":4,"deduction":310}],"NIH":[{"cat":"Analyzer/Immunoassay","count":14,"deduction":28600},{"cat":"Microscope","count":8,"deduction":11400},{"cat":"Water Purification","count":4,"deduction":5200},{"cat":"Thermal Cycler","count":3,"deduction":3800},{"cat":"Other","count":12,"deduction":18700}]};
 const PROB = [{"cat":"Battery / Power","pct":22,"color":"#ef4444"},{"cat":"Component Wear","pct":19,"color":"#f97316"},{"cat":"Equipment Failure","pct":28,"color":"#eab308"},{"cat":"Communication/IT","pct":12,"color":"#3b82f6"},{"cat":"Physical Damage","pct":11,"color":"#a855f7"},{"cat":"PPM Overdue","pct":8,"color":"#ec4899"}];
 const PPM = {"HOAG":[{"mo":"Jan","done":45,"deducted":0},{"mo":"Feb","done":38,"deducted":0},{"mo":"Mar","done":52,"deducted":0},{"mo":"Apr","done":31,"deducted":0}],"HSA":[{"mo":"Jan","done":89,"deducted":210},{"mo":"Feb","done":102,"deducted":0},{"mo":"Mar","done":95,"deducted":0},{"mo":"Apr","done":87,"deducted":0}],"IKN":[{"mo":"Jan","done":64,"deducted":800},{"mo":"Feb","done":71,"deducted":0},{"mo":"Mar","done":68,"deducted":440},{"mo":"Apr","done":59,"deducted":0}],"NIH":[{"mo":"Jan","done":48,"deducted":10600},{"mo":"Feb","done":62,"deducted":11030},{"mo":"Mar","done":55,"deducted":0},{"mo":"Apr","done":44,"deducted":10}]};
-const SS = {"HOAG":{"avgPerf":"93.2","totalDed":4840,"totalFee":71048.84,"b1":0,"b2":4840,"b3":0,"b4":0,"b5":0,"months":4},"HSA":{"avgPerf":"97.7","totalDed":31160,"totalFee":1363707.5,"b1":0,"b2":26570,"b3":0,"b4":4590,"b5":0,"months":4},"IKN":{"avgPerf":"99.9","totalDed":7480,"totalFee":5566465.89,"b1":40,"b2":6200,"b3":1240,"b4":0,"b5":0,"months":4},"NIH":{"avgPerf":"94.8","totalDed":159740,"totalFee":3156363.9399999995,"b1":14520,"b2":92130,"b3":21640,"b4":31450,"b5":0,"months":4}};
-const MT = [{"month":"Jan","totalDed":64820,"totalFee":2557492.35},{"month":"Feb","totalDed":49930,"totalFee":2529493.24},{"month":"Mar","totalDed":42050,"totalFee":2535300.29},{"month":"Apr","totalDed":46420,"totalFee":2535300.29}];
+const SS = {"HOAG":{"avgPerf":"93.2","totalDed":4840,"totalFee":71048.84,"b1":0,"b2":4840,"b3":0,"b4":0,"b5":0,"months":4},"HSA":{"avgPerf":"97.7","totalDed":31160,"totalFee":1363707.5,"b1":0,"b2":26570,"b3":0,"b4":4590,"b5":0,"months":4},"IKN":{"avgPerf":"99.7","totalDed":20760,"totalFee":6930376.82,"b1":40,"b2":19480,"b3":1240,"b4":0,"b5":0,"months":5},"NIH":{"avgPerf":"94.8","totalDed":159740,"totalFee":3156363.9399999995,"b1":14520,"b2":92130,"b3":21640,"b4":31450,"b5":0,"months":4}};
+const MT = [{"month":"Jan","totalDed":64820,"totalFee":2557492.35},{"month":"Feb","totalDed":49930,"totalFee":2529493.24},{"month":"Mar","totalDed":42050,"totalFee":2535300.29},{"month":"Apr","totalDed":46420,"totalFee":2535300.29},{"month":"May","totalDed":13280,"totalFee":1363910.93}];
 
 // ── Gauge SVG ──────────────────────────────────────────────
 function makeSVGGauge(pct, color) {
