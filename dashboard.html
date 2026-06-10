@@ -7,6 +7,100 @@
 <link rel="stylesheet" href="style.css"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<style>
+:root{
+  --bg:#0f1117;--surface:#16192a;--surface2:#1e2236;--border:#2d3250;
+  --primary:#4f7ef8;--success:#22c55e;--danger:#ef4444;--warn:#f59e0b;
+  --accent:#06b6d4;--purple:#a855f7;--pink:#ec4899;--text:#e8eaf6;--muted:#8892b0;
+  --font:'Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.5}
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.hdr-brand{display:flex;align-items:center;gap:12px}
+.hdr-logo{width:36px;height:36px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff}
+.hdr-title{font-weight:700;font-size:15px}
+.hdr-sub{font-size:11px;color:var(--muted)}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hdr-badge{padding:4px 10px;border-radius:20px;background:var(--surface2);font-size:11px;border:1px solid var(--border)}
+.hdr-date{font-size:11px;color:var(--muted)}
+.filter-bar{display:flex;align-items:center;gap:12px;padding:10px 24px;background:var(--surface2);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.filter-bar label{font-size:11px;color:var(--muted);white-space:nowrap}
+.filter-bar select{background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:5px 10px;font-size:12px;font-family:var(--font)}
+.filter-sep{flex:1}
+.filter-info{font-size:11px;color:var(--muted)}
+.btn-reset{padding:5px 14px;border-radius:6px;background:var(--surface);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:12px}
+.btn-reset:hover{border-color:var(--primary);color:var(--primary)}
+.main{max-width:1600px;margin:0 auto;padding:20px 24px}
+.sec-title{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin:28px 0 12px;display:flex;align-items:center;gap:8px}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px;margin-bottom:8px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;position:relative;overflow:hidden;transition:.2s}
+.kpi:hover{border-color:var(--kc,var(--primary));transform:translateY(-2px)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc,var(--primary))}
+.kpi-lbl{font-size:11px;color:var(--muted);margin-bottom:6px}
+.kpi-val{font-size:22px;font-weight:800;line-height:1}
+.kpi-sub{font-size:10px;color:var(--muted);margin-top:4px}
+.kpi-icon{position:absolute;right:12px;top:12px;font-size:20px;opacity:.4}
+.gauge-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px}
+.gauge-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-align:center;min-width:120px}
+.gauge-site{font-weight:700;font-size:13px;margin-top:4px}
+.gauge-lbl{font-size:10px;color:var(--muted)}
+.chart-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.chart-grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px}
+.chart-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.chart-title{font-size:13px;font-weight:600}
+.chart-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.chart-wrap{position:relative;height:260px}
+.plotly-wrap{height:300px}
+.plotly-wrap-tall{height:380px}
+.insight-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:16px}
+.insight{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;border-left:3px solid var(--ic,var(--primary))}
+.insight-head{font-weight:700;margin-bottom:8px;color:var(--ic,var(--primary));font-size:13px}
+.insight-body{font-size:12px;color:var(--muted);line-height:1.6}
+.hl{color:var(--text);font-weight:600}
+.tbl-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px}
+.tbl-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border)}
+.tbl-search{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 12px;font-size:12px;font-family:var(--font);width:260px}
+.tbl-cnt{font-size:11px;color:var(--muted)}
+.tbl-wrap{overflow-x:auto;max-height:400px;overflow-y:auto}
+table{width:100%;border-collapse:collapse}
+thead{position:sticky;top:0;z-index:2}
+th{background:var(--surface2);padding:9px 12px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:var(--text)}
+td{padding:8px 12px;border-bottom:1px solid rgba(45,50,80,.4);font-size:12px}
+tr:hover td{background:var(--surface2)}
+tr.hidden{display:none}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600}
+.b-hoag{background:#4f7ef820;color:#4f7ef8;border:1px solid #4f7ef840}
+.b-hsa{background:#22d3ee20;color:#22d3ee;border:1px solid #22d3ee40}
+.b-ikn{background:#4ade8020;color:#4ade80;border:1px solid #4ade8040}
+.b-nih{background:#c084fc20;color:#c084fc;border:1px solid #c084fc40}
+.b-g{background:#22c55e20;color:#22c55e}
+.b-y{background:#f59e0b20;color:#f59e0b}
+.b-r{background:#ef444420;color:#ef4444}
+.exec-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.exec-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.exec-card h3{font-size:14px;font-weight:700;margin-bottom:12px;color:var(--primary)}
+.exec-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(45,50,80,.4)}
+.exec-row:last-child{border-bottom:none}
+.exec-label{font-size:12px;color:var(--muted)}
+.exec-val{font-size:12px;font-weight:600;text-align:right}
+.rank-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700}
+.rank-1{background:#f59e0b30;color:#f59e0b}
+.rank-2{background:#94a3b830;color:#94a3b8}
+.rank-3{background:#c084fc30;color:#c084fc}
+.perf-bar-wrap{background:var(--surface2);border-radius:4px;height:8px;flex:1;margin:0 8px}
+.perf-bar{height:8px;border-radius:4px;background:var(--primary);transition:.3s}
+@media(max-width:900px){
+  .chart-grid-2,.chart-grid-3,.chart-grid-4,.exec-grid{grid-template-columns:1fr}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
 </head>
 <body>
 
@@ -21,7 +115,8 @@
   </div>
   <div class="hdr-right">
     <span class="hdr-badge">Jan &ndash; May 2026</span>
-    <span class="hdr-badge">4 Sites &bull; 17 Reports</span>
+    <span class="hdr-badge">4 Sites &bull; 18 Reports</span>
+    <span class="hdr-badge" style="color:var(--success);border-color:var(--success)40">Live Analytics</span>
     <span class="hdr-date">GM Presentation</span>
   </div>
 </header>
@@ -42,103 +137,162 @@
   <label>KDI</label>
   <select id="fKDI" onchange="applyFilters()">
     <option value="">All KDIs</option>
-    <option value="b1">B1 – Response</option><option value="b2">B2 – Repair</option>
-    <option value="b3">B3 – Scheduled</option><option value="b4">B4 – Uptime</option>
-    <option value="b5">B5 – T&amp;C</option>
+    <option value="b1">B1 &ndash; Response</option><option value="b2">B2 &ndash; Repair</option>
+    <option value="b3">B3 &ndash; Scheduled</option><option value="b4">B4 &ndash; Uptime</option>
+    <option value="b5">B5 &ndash; T&amp;C</option>
   </select>
   <div class="filter-sep"></div>
-  <div class="filter-info">Showing <span id="fCount">17</span> of 17 records</div>
+  <div class="filter-info">Showing <span id="fCount">18</span> of 18 records</div>
   <button class="btn-reset" onclick="resetFilters()">Reset</button>
 </div>
 
-<!-- MAIN -->
 <main class="main">
 
+<!-- EXECUTIVE SUMMARY -->
+<div class="sec-title">&#9632; Executive Summary — Jan to May 2026</div>
+<div class="exec-grid">
+  <div class="exec-card">
+    <h3>&#128200; Portfolio Performance</h3>
+    <div class="exec-row"><span class="exec-label">Total Monthly Fee (Portfolio)</span><span class="exec-val">RM 15.83M <small style="color:var(--muted)">(cumulative)</small></span></div>
+    <div class="exec-row"><span class="exec-label">Total Deductions Incurred</span><span class="exec-val" style="color:var(--danger)">RM 216,500</span></div>
+    <div class="exec-row"><span class="exec-label">Net Deduction Rate</span><span class="exec-val" style="color:var(--warn)">1.37% of Portfolio</span></div>
+    <div class="exec-row"><span class="exec-label">Portfolio Average Performance</span><span class="exec-val" style="color:var(--success)">96.40%</span></div>
+    <div class="exec-row"><span class="exec-label">Best Site (Avg)</span><span class="exec-val"><span class="badge b-ikn">IKN</span> 99.69%</span></div>
+    <div class="exec-row"><span class="exec-label">Needs Attention</span><span class="exec-val"><span class="badge b-hoag">HOAG</span> 92.88% | <span class="badge b-nih">NIH</span> 94.81%</span></div>
+  </div>
+  <div class="exec-card">
+    <h3>&#9888; Deduction Breakdown by KDI</h3>
+    <div class="exec-row"><span class="exec-label">B1 – Response Time</span><span class="exec-val" style="color:var(--danger)">RM 14,560 &nbsp;<span class="badge b-r">6.7%</span></span></div>
+    <div class="exec-row"><span class="exec-label">B2 – Unscheduled Repair <span style="color:var(--danger)">&#9650; Highest</span></span><span class="exec-val" style="color:var(--danger)">RM 142,610 &nbsp;<span class="badge b-r">65.9%</span></span></div>
+    <div class="exec-row"><span class="exec-label">B3 – Scheduled Maintenance</span><span class="exec-val" style="color:var(--warn)">RM 22,880 &nbsp;<span class="badge b-y">10.6%</span></span></div>
+    <div class="exec-row"><span class="exec-label">B4 – Equipment Uptime</span><span class="exec-val" style="color:var(--warn)">RM 36,450 &nbsp;<span class="badge b-y">16.8%</span></span></div>
+    <div class="exec-row"><span class="exec-label">B5 – T&amp;C Compliance</span><span class="exec-val" style="color:var(--success)">RM 0 &nbsp;<span class="badge b-g">0%</span></span></div>
+  </div>
+  <div class="exec-card">
+    <h3>&#128295; Key Findings &amp; Root Causes</h3>
+    <div class="exec-row"><span class="exec-label">Dominant driver</span><span class="exec-val">B2 Repair = 65.9% of all deductions</span></div>
+    <div class="exec-row"><span class="exec-label">Biggest contributor site</span><span class="exec-val"><span class="badge b-nih">NIH</span> RM 159,740 (73.8%)</span></div>
+    <div class="exec-row"><span class="exec-label">Root cause #1</span><span class="exec-val">Equipment Failure (28% of WOs)</span></div>
+    <div class="exec-row"><span class="exec-label">Root cause #2</span><span class="exec-val">Battery/Power Issues (22% of WOs)</span></div>
+    <div class="exec-row"><span class="exec-label">Repetitive assets</span><span class="exec-val">11 assets &ndash; 2&times; to 4&times; recurrence</span></div>
+    <div class="exec-row"><span class="exec-label">Prolonged WO (NIH)</span><span class="exec-val">Gas Chromatography WO since Oct 2022</span></div>
+  </div>
+  <div class="exec-card">
+    <h3>&#128203; Site Performance Ranking</h3>
+    <div class="exec-row">
+      <span class="rank-badge rank-1">&#129351; #1</span>
+      <span class="exec-label" style="flex:1;padding:0 10px">IKN – Institut Kanser Negara</span>
+      <span class="exec-val" style="color:var(--success)">99.69%</span>
+    </div>
+    <div class="exec-row">
+      <span class="rank-badge rank-2">&#129352; #2</span>
+      <span class="exec-label" style="flex:1;padding:0 10px">HSA – Hospital Shah Alam</span>
+      <span class="exec-val" style="color:var(--success)">97.74%</span>
+    </div>
+    <div class="exec-row">
+      <span class="rank-badge rank-3">&#129353; #3</span>
+      <span class="exec-label" style="flex:1;padding:0 10px">NIH – National Inst. Health</span>
+      <span class="exec-val" style="color:var(--warn)">94.81%</span>
+    </div>
+    <div class="exec-row">
+      <span class="rank-badge" style="background:#ef444430;color:#ef4444">#4</span>
+      <span class="exec-label" style="flex:1;padding:0 10px">HOAG – Hospital Orang Asli</span>
+      <span class="exec-val" style="color:var(--danger)">92.88%</span>
+    </div>
+    <div class="exec-row"><span class="exec-label">Action required</span><span class="exec-val" style="color:var(--danger)">NIH B2 + HOAG Dental Equipment</span></div>
+  </div>
+</div>
+
 <!-- KPI OVERVIEW -->
-<div class="sec-title">&#9632; Portfolio Overview</div>
+<div class="sec-title">&#9632; Portfolio KPI Overview</div>
 <div class="kpi-grid">
-  <div class="kpi" style="--kc:var(--primary)"><div class="kpi-lbl">Total Reports</div><div class="kpi-val">16</div><div class="kpi-sub">4 sites &bull; Jan&ndash;Apr 2026</div><div class="kpi-icon">&#128196;</div></div>
-  <div class="kpi" style="--kc:var(--success)"><div class="kpi-lbl">Best Performance</div><div class="kpi-val">99.93%</div><div class="kpi-sub">IKN &bull; Mar 2026</div><div class="kpi-icon">&#11088;</div></div>
+  <div class="kpi" style="--kc:var(--primary)"><div class="kpi-lbl">Total Reports</div><div class="kpi-val">18</div><div class="kpi-sub">4 sites &bull; Jan&ndash;May 2026</div><div class="kpi-icon">&#128196;</div></div>
+  <div class="kpi" style="--kc:var(--success)"><div class="kpi-lbl">Best Performance</div><div class="kpi-val">100%</div><div class="kpi-sub">HOAG &bull; May 2026</div><div class="kpi-icon">&#11088;</div></div>
   <div class="kpi" style="--kc:var(--danger)"><div class="kpi-lbl">Worst Performance</div><div class="kpi-val">87.61%</div><div class="kpi-sub">HOAG &bull; Mar 2026</div><div class="kpi-icon">&#9888;</div></div>
   <div class="kpi" style="--kc:var(--warn)"><div class="kpi-lbl">Highest Deduction</div><div class="kpi-val">RM 54,760</div><div class="kpi-sub">NIH &bull; Jan 2026</div><div class="kpi-icon">&#128200;</div></div>
-  <div class="kpi" style="--kc:var(--accent)"><div class="kpi-lbl">Total Portfolio Fee</div><div class="kpi-val">RM 10.16M</div><div class="kpi-sub">Combined all sites &bull; Apr basis</div><div class="kpi-icon">&#128181;</div></div>
-  <div class="kpi" style="--kc:var(--purple)"><div class="kpi-lbl">Total Deductions</div><div class="kpi-val">RM 203,220</div><div class="kpi-sub">Across 16 reports</div><div class="kpi-icon">&#128203;</div></div>
+  <div class="kpi" style="--kc:var(--accent)"><div class="kpi-lbl">Total Portfolio Fee</div><div class="kpi-val">RM 15.83M</div><div class="kpi-sub">5-month cumulative</div><div class="kpi-icon">&#128181;</div></div>
+  <div class="kpi" style="--kc:var(--purple)"><div class="kpi-lbl">Total Deductions</div><div class="kpi-val">RM 216,500</div><div class="kpi-sub">Across 18 reports</div><div class="kpi-icon">&#128203;</div></div>
   <div class="kpi" style="--kc:var(--success)"><div class="kpi-lbl">Avg Performance</div><div class="kpi-val">96.40%</div><div class="kpi-sub">Portfolio average</div><div class="kpi-icon">&#128200;</div></div>
-  <div class="kpi" style="--kc:var(--pink)"><div class="kpi-lbl">B2 Repair Share</div><div class="kpi-val">60.4%</div><div class="kpi-sub">Dominant deduction driver</div><div class="kpi-icon">&#128295;</div></div>
+  <div class="kpi" style="--kc:var(--pink)"><div class="kpi-lbl">B2 Repair Share</div><div class="kpi-val">65.9%</div><div class="kpi-sub">Dominant deduction driver</div><div class="kpi-icon">&#128295;</div></div>
 </div>
 
 <!-- PERFORMANCE GAUGES -->
 <div class="sec-title">&#9632; Site Performance Gauges</div>
 <div class="gauge-grid" id="gaugeGrid"></div>
 
-<!-- PERFORMANCE TRENDS -->
-<div class="sec-title">&#9632; Performance &amp; Deduction Trends</div>
-<div class="chart-grid-2">
-  <div class="chart-card">
-    <div class="chart-hdr"><div><div class="chart-title">Monthly Performance Level (%)</div><div class="chart-sub">All 4 sites — Jan to Apr 2026</div></div></div>
-    <div class="chart-wrap"><canvas id="cPerf"></canvas></div>
-  </div>
-  <div class="chart-card">
-    <div class="chart-hdr"><div><div class="chart-title">Monthly Fee vs Total Deduction (RM)</div><div class="chart-sub">Area chart — financial exposure</div></div></div>
-    <div class="chart-wrap"><canvas id="cArea"></canvas></div>
-  </div>
+<!-- MULTI-PLOT LINE CHART -->
+<div class="sec-title">&#9632; Multi-Plot Line Chart — Performance &amp; Deduction Trends</div>
+<div class="chart-card" style="margin-bottom:16px">
+  <div class="chart-hdr"><div><div class="chart-title">Synchronized Multi-Plot: Performance % &amp; Deduction (RM) by Site</div><div class="chart-sub">All 4 sites &mdash; Jan to May 2026 &mdash; hover for details</div></div></div>
+  <div id="pMultiPlot" class="plotly-wrap-tall"></div>
 </div>
 
-<!-- DEDUCTION ANALYSIS -->
-<div class="sec-title">&#9632; Deduction Analysis</div>
+<!-- STACKED + GROUPED CHARTS -->
+<div class="sec-title">&#9632; Deduction Analysis — Stackable &amp; Grouped Charts</div>
 <div class="chart-grid-2">
   <div class="chart-card">
-    <div class="chart-hdr"><div><div class="chart-title">Monthly Deduction by Site (RM)</div><div class="chart-sub">Grouped bar — site comparison</div></div></div>
-    <div class="chart-wrap"><canvas id="cDeduct"></canvas></div>
-  </div>
-  <div class="chart-card">
-    <div class="chart-hdr"><div><div class="chart-title">KDI Deduction Stacked Bar</div><div class="chart-sub">B1–B5 stacked — by month (all sites)</div></div></div>
+    <div class="chart-hdr"><div><div class="chart-title">Stackable Chart — KDI Deduction by Month</div><div class="chart-sub">B1–B5 stacked — cumulative view</div></div></div>
     <div class="chart-wrap"><canvas id="cStack"></canvas></div>
   </div>
-</div>
-
-<!-- RADAR + DOUGHNUT + BUBBLE -->
-<div class="chart-grid-3">
   <div class="chart-card">
-    <div class="chart-hdr"><div><div class="chart-title">Site Radar — KDI Profile</div><div class="chart-sub">Spider chart — cumulative B1–B5 deductions</div></div></div>
-    <div class="chart-wrap"><canvas id="cRadar"></canvas></div>
-  </div>
-  <div class="chart-card">
-    <div class="chart-hdr"><div><div class="chart-title">KDI Deduction Share</div><div class="chart-sub">Doughnut — portfolio total</div></div></div>
-    <div class="chart-wrap"><canvas id="cDoughnut"></canvas></div>
-  </div>
-  <div class="chart-card">
-    <div class="chart-hdr"><div><div class="chart-title">Fee vs Deduction Bubble</div><div class="chart-sub">Bubble = deduction amount per record</div></div></div>
-    <div class="chart-wrap"><canvas id="cBubble"></canvas></div>
+    <div class="chart-hdr"><div><div class="chart-title">Monthly Deduction by Site (RM)</div><div class="chart-sub">Grouped bar — site comparison Jan–May</div></div></div>
+    <div class="chart-wrap"><canvas id="cDeduct"></canvas></div>
   </div>
 </div>
 
-<!-- HIGHEST / LOWEST -->
-<div class="sec-title">&#9632; Highest &amp; Lowest Deduction Ranking</div>
+<!-- SPIDER / RADAR -->
+<div class="sec-title">&#9632; Spider Chart — KDI Risk Profile by Site</div>
 <div class="chart-grid-2">
   <div class="chart-card">
-    <div class="chart-hdr"><div><div class="chart-title">Top 8 Deductions — All Records</div><div class="chart-sub">Horizontal bar — sorted descending</div></div></div>
-    <div class="chart-wrap"><canvas id="cRankHigh"></canvas></div>
+    <div class="chart-hdr"><div><div class="chart-title">Site Radar — KDI Deduction Profile</div><div class="chart-sub">Spider chart — normalized B1–B5 deductions per site</div></div></div>
+    <div id="pRadar" class="plotly-wrap"></div>
   </div>
   <div class="chart-card">
-    <div class="chart-hdr"><div><div class="chart-title">Monthly Deduction % Trend</div><div class="chart-sub">Line chart — deduction rate over time</div></div></div>
-    <div class="chart-wrap"><canvas id="cPct"></canvas></div>
+    <div class="chart-hdr"><div><div class="chart-title">KDI Deduction Share (Doughnut)</div><div class="chart-sub">Portfolio total — B1 to B5 breakdown</div></div></div>
+    <div class="chart-wrap"><canvas id="cDoughnut"></canvas></div>
   </div>
 </div>
 
-<!-- B2 REPAIR ANALYSIS -->
+<!-- SCATTER PLOT (SCIENTIFIC) -->
+<div class="sec-title">&#9632; Scatter Plot &amp; Scientific Chart — Correlation Analysis</div>
+<div class="chart-grid-2">
+  <div class="chart-card">
+    <div class="chart-hdr"><div><div class="chart-title">Scatter Plot — Fee vs Performance (All Records)</div><div class="chart-sub">Site colour-coded &mdash; bubble size = deduction amount</div></div></div>
+    <div id="pScatter" class="plotly-wrap"></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-hdr"><div><div class="chart-title">Scientific Chart — Deduction % vs B2 Repair Intensity</div><div class="chart-sub">Dual-axis &mdash; trend regression line &mdash; all records</div></div></div>
+    <div id="pScientific" class="plotly-wrap"></div>
+  </div>
+</div>
+
+<!-- BOXPLOT + 3D HISTOGRAM -->
+<div class="sec-title">&#9632; Statistical Distribution — Boxplot &amp; 3D Histogram</div>
+<div class="chart-grid-2">
+  <div class="chart-card">
+    <div class="chart-hdr"><div><div class="chart-title">Boxplot — Deduction % Distribution by Site</div><div class="chart-sub">True box-and-whisker: min / Q1 / median / Q3 / max</div></div></div>
+    <div id="pBoxplot" class="plotly-wrap"></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-hdr"><div><div class="chart-title">3D Histogram — Performance Distribution</div><div class="chart-sub">Site × Month × Performance — rotate &amp; zoom</div></div></div>
+    <div id="p3DHist" class="plotly-wrap"></div>
+  </div>
+</div>
+
+<!-- B2 ANALYSIS -->
 <div class="sec-title">&#9632; B2 Repair — Equipment Category Analysis</div>
 <div class="chart-grid-2">
   <div class="chart-card">
-    <div class="chart-hdr"><div><div class="chart-title">Equipment Category vs Deduction (RM)</div><div class="chart-sub">Select site to drill down</div></div>
-    <select id="equipSite" onchange="updateEquipChart()" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:4px 8px;font-size:11px;font-family:var(--font)">
-      <option>HOAG</option><option>HSA</option><option>IKN</option><option>NIH</option>
-    </select>
+    <div class="chart-hdr">
+      <div><div class="chart-title">Equipment Category vs Deduction (RM)</div><div class="chart-sub">Select site to drill down</div></div>
+      <select id="equipSite" onchange="updateEquipChart()" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:4px 8px;font-size:11px;font-family:var(--font)">
+        <option>HOAG</option><option>HSA</option><option>IKN</option><option>NIH</option>
+      </select>
     </div>
     <div class="chart-wrap"><canvas id="cEquip"></canvas></div>
   </div>
   <div class="chart-card">
-    <div class="chart-hdr"><div><div class="chart-title">Problem Nature Categories</div><div class="chart-sub">Histogram — root cause distribution</div></div></div>
+    <div class="chart-hdr"><div><div class="chart-title">Problem Nature — Root Cause Distribution</div><div class="chart-sub">Histogram — % of work orders by failure type</div></div></div>
     <div class="chart-wrap"><canvas id="cProb"></canvas></div>
   </div>
 </div>
@@ -156,149 +310,59 @@
   </div>
 </div>
 
-<!-- BOXPLOT SIMULATION -->
-<div class="sec-title">&#9632; Deduction Distribution &amp; Spread</div>
-<div class="chart-grid-2">
-  <div class="chart-card">
-    <div class="chart-hdr"><div><div class="chart-title">Deduction % Boxplot (simulated)</div><div class="chart-sub">Min / Q1 / Median / Q3 / Max per site</div></div></div>
-    <div class="chart-wrap"><canvas id="cBox"></canvas></div>
-  </div>
-  <div class="chart-card">
-    <div class="chart-hdr"><div><div class="chart-title">Performance % Scatter</div><div class="chart-sub">All 16 records — site colour-coded</div></div></div>
-    <div class="chart-wrap"><canvas id="cScatter"></canvas></div>
-  </div>
-</div>
-
 <!-- REPETITIVE ASSETS -->
 <div class="sec-title">&#9632; Repetitive Asset Analysis</div>
 <div class="chart-grid-2">
   <div class="chart-card">
-    <div class="chart-hdr"><div><div class="chart-title">Top Repeat Offender Assets</div><div class="chart-sub">Bar — cumulative deduction by asset</div></div></div>
+    <div class="chart-hdr"><div><div class="chart-title">Top Repeat Offender Assets</div><div class="chart-sub">Bar — cumulative deduction &amp; recurrence count</div></div></div>
     <div class="chart-wrap"><canvas id="cRepeat"></canvas></div>
   </div>
-  <div class="chart-card wide" style="grid-column:auto">
+  <div class="chart-card">
     <div class="chart-title" style="margin-bottom:14px">Repetitive Asset Detail</div>
     <div class="tbl-wrap" style="max-height:220px">
       <table>
-        <thead><tr><th>Site</th><th>Asset No</th><th>Description</th><th>Purchase Price (RM)</th><th>Recurrence</th><th>Total Ded (RM)</th></tr></thead>
-        <tbody><tr>
-  <td><span class="badge b-ikn">IKN</span></td>
-  <td style="font-size:11px;color:var(--muted)">IKN400762</td>
-  <td>Immunoassay Analyzer</td>
-  <td class="num">1,443,450</td>
-  <td class="num" style="color:var(--warn)">3×</td>
-  <td class="num" style="color:var(--danger)">500</td>
-</tr><tr>
-  <td><span class="badge b-ikn">IKN</span></td>
-  <td style="font-size:11px;color:var(--muted)">IKN400973</td>
-  <td>CT Scanner</td>
-  <td class="num">3,557,530</td>
-  <td class="num" style="color:var(--warn)">2×</td>
-  <td class="num" style="color:var(--danger)">340</td>
-</tr><tr>
-  <td><span class="badge b-ikn">IKN</span></td>
-  <td style="font-size:11px;color:var(--muted)">IKN400774</td>
-  <td>CT Scanner (PACS)</td>
-  <td class="num">4,605,710</td>
-  <td class="num" style="color:var(--warn)">2×</td>
-  <td class="num" style="color:var(--danger)">260</td>
-</tr><tr>
-  <td><span class="badge b-hoag">HOAG</span></td>
-  <td style="font-size:11px;color:var(--muted)">HOAG 10108</td>
-  <td>Dental Chair (ADEC)</td>
-  <td class="num">49,950</td>
-  <td class="num" style="color:var(--warn)">3×</td>
-  <td class="num" style="color:var(--danger)">400</td>
-</tr><tr>
-  <td><span class="badge b-hoag">HOAG</span></td>
-  <td style="font-size:11px;color:var(--muted)">HOAG 10132</td>
-  <td>Dental Chair (Officer)</td>
-  <td class="num">49,500</td>
-  <td class="num" style="color:var(--warn)">2×</td>
-  <td class="num" style="color:var(--danger)">200</td>
-</tr><tr>
-  <td><span class="badge b-hoag">HOAG</span></td>
-  <td style="font-size:11px;color:var(--muted)">HOAG 10043</td>
-  <td>Defibrillator (ZOLL)</td>
-  <td class="num">65,000</td>
-  <td class="num" style="color:var(--warn)">2×</td>
-  <td class="num" style="color:var(--danger)">200</td>
-</tr><tr>
-  <td><span class="badge b-hoag">HOAG</span></td>
-  <td style="font-size:11px;color:var(--muted)">HOAG 10200</td>
-  <td>Patient Monitor</td>
-  <td class="num">24,999</td>
-  <td class="num" style="color:var(--warn)">2×</td>
-  <td class="num" style="color:var(--danger)">100</td>
-</tr><tr>
-  <td><span class="badge b-nih">NIH</span></td>
-  <td style="font-size:11px;color:var(--muted)">NIHB002526</td>
-  <td>Gas Chromatography</td>
-  <td class="num">492,000</td>
-  <td class="num" style="color:var(--warn)">4×</td>
-  <td class="num" style="color:var(--danger)">2,200</td>
-</tr><tr>
-  <td><span class="badge b-nih">NIH</span></td>
-  <td style="font-size:11px;color:var(--muted)">NIHB001702</td>
-  <td>Molecular Analyser</td>
-  <td class="num">4,499,200</td>
-  <td class="num" style="color:var(--warn)">4×</td>
-  <td class="num" style="color:var(--danger)">1,800</td>
-</tr><tr>
-  <td><span class="badge b-nih">NIH</span></td>
-  <td style="font-size:11px;color:var(--muted)">NIHB001719</td>
-  <td>Microscope</td>
-  <td class="num">42,018</td>
-  <td class="num" style="color:var(--warn)">4×</td>
-  <td class="num" style="color:var(--danger)">3,200</td>
-</tr><tr>
-  <td><span class="badge b-hsa">HSA</span></td>
-  <td style="font-size:11px;color:var(--muted)">KKM/HSA/H15/3661</td>
-  <td>Defibrillator</td>
-  <td class="num">14,250</td>
-  <td class="num" style="color:var(--warn)">2×</td>
-  <td class="num" style="color:var(--danger)">90</td>
-</tr></tbody>
+        <thead><tr><th>Site</th><th>Asset No</th><th>Description</th><th>Price (RM)</th><th>Recurrence</th><th>Total Ded (RM)</th></tr></thead>
+        <tbody id="repeatTbody"></tbody>
       </table>
     </div>
   </div>
 </div>
 
-<!-- INSIGHTS -->
-<div class="sec-title">&#9632; Key Insights &amp; Analysis</div>
+<!-- KEY INSIGHTS -->
+<div class="sec-title">&#9632; B2 Prolonged Deduction &amp; B3 PPM — Key Insights</div>
 <div class="insight-grid">
   <div class="insight" style="--ic:var(--danger)">
-    <div class="insight-head">NIH — Prolonged Deduction</div>
-    <div class="insight-body">NIH carries <span class="hl">old work orders from 2022</span> (e.g. NIHB002526 Gas Chromatography dated Oct 2022). These unresolved WOs repeatedly trigger B2 deductions each month, contributing <span class="hl">RM 159,740 (79%)</span> of total portfolio deductions.</div>
+    <div class="insight-head">&#9888; NIH — Prolonged B2 Deduction (Critical)</div>
+    <div class="insight-body">NIH carries <span class="hl">old work orders from 2022</span> (Gas Chromatography NIHB002526, dated Oct 2022 &mdash; 4&times; recurrence). These unresolved WOs trigger B2 deductions every month, accounting for <span class="hl">RM 92,130 alone</span>. NIH is the biggest contributor at <span class="hl">RM 159,740 (73.8%)</span> of total portfolio deductions.</div>
   </div>
   <div class="insight" style="--ic:var(--warn)">
-    <div class="insight-head">HOAG — B2 Escalating Trend</div>
-    <div class="insight-body">HOAG B2 deductions trended up Jan&rarr;Mar (RM1,140&rarr;RM2,200) driven by <span class="hl">Dental Equipment failures</span>. ADEC Chair (10108, 10132) appeared in 3 consecutive months suggesting a <span class="hl">chronic maintenance gap</span>. Apr recovered strongly to RM200.</div>
+    <div class="insight-head">&#128295; HOAG — B2 Escalation &amp; Recovery</div>
+    <div class="insight-body">HOAG B2 deductions escalated Jan&rarr;Mar (RM1,140&rarr;RM2,200) driven by <span class="hl">Dental Chair failures</span> (ADEC 10108 &amp; 10132, 3 consecutive months). Apr recovered to RM200. May achieved <span class="hl">zero deduction (100% performance)</span> — indicating the dental equipment issue was resolved.</div>
   </div>
   <div class="insight" style="--ic:var(--success)">
-    <div class="insight-head">IKN — Best Managed Site</div>
-    <div class="insight-body">IKN consistently achieves <span class="hl">99.75–99.93%</span> performance. Despite managing high-value CT Scanners (RM4.6M), deduction rate never exceeds <span class="hl">0.25%</span>. Strong PPM discipline and rapid response.</div>
+    <div class="insight-head">&#11088; IKN — Best Managed Site</div>
+    <div class="insight-body">IKN consistently achieves <span class="hl">99.75–99.93%</span> performance. Managing high-value CT Scanners (RM4.6M) and Immunoassay Analyzers, deduction rate never exceeds <span class="hl">1.00%</span>. Strong PPM discipline, rapid response, and disciplined asset management model.</div>
   </div>
   <div class="insight" style="--ic:var(--primary)">
-    <div class="insight-head">B2 Dominates — 60% of Deductions</div>
-    <div class="insight-body">Unscheduled repair (B2) accounts for <span class="hl">RM 129,330 (60.4%)</span> of all deductions. Root causes: Battery/power issues (22%), Equipment failure (28%), Component wear (19%). Preventive replacement programme recommended.</div>
+    <div class="insight-head">&#128200; B2 Dominates — 65.9% of All Deductions</div>
+    <div class="insight-body">Unscheduled repair (B2) accounts for <span class="hl">RM 142,610 (65.9%)</span> of all deductions. Root causes: Equipment Failure (28%), Battery/Power (22%), Component Wear (19%). <span class="hl">Recommendation: Preventive Replacement Programme</span> for battery-dependent devices.</div>
   </div>
   <div class="insight" style="--ic:var(--purple)">
-    <div class="insight-head">HSA — Uptime (B4) Trend Rising</div>
-    <div class="insight-body">HSA B4 deductions increased from RM620 (Jan) to <span class="hl">RM2,250 (Apr)</span>. This signals growing uptime compliance issues. If unchecked, Apr trend may continue into Q2 2026.</div>
+    <div class="insight-head">&#128200; HSA — B4 Uptime Rising Trend</div>
+    <div class="insight-body">HSA B4 deductions increased from RM620 (Jan) to <span class="hl">RM2,250 (Apr)</span> — a 263% rise. Signals growing uptime compliance issues. If trend continues into May–June, HSA could drop below the 95% target. <span class="hl">Uptime monitoring and escalation protocol required.</span></div>
   </div>
   <div class="insight" style="--ic:var(--accent)">
-    <div class="insight-head">NIH PPM Compliance Improving</div>
-    <div class="insight-body">NIH B3 deduction reduced from RM10,600 (Jan) to <span class="hl">RM10 (Apr)</span> — a 99.9% improvement. This indicates the PPM backlog is being cleared. However <span class="hl">B2 repair remains stubbornly high</span> at RM23,630–27,000/month.</div>
+    <div class="insight-head">&#128203; NIH B3 PPM — Strong Recovery</div>
+    <div class="insight-body">NIH B3 deduction reduced from <span class="hl">RM10,600 (Jan) to RM10 (Apr)</span> — a 99.9% improvement. PPM backlog is being cleared. However <span class="hl">B2 repair remains stubbornly high</span> at RM23,630–27,000/month, driven by laboratory analyser chronic failures. Structured overhaul plan needed.</div>
   </div>
 </div>
 
 <!-- FULL DATA TABLE -->
-<div class="sec-title">&#9632; Complete Deduction Report</div>
+<div class="sec-title">&#9632; Complete Deduction Report — Jan to May 2026</div>
 <div class="tbl-card">
   <div class="tbl-bar">
     <input class="tbl-search" id="tblSearch" placeholder="Search site, month, KDI..." oninput="filterTable()"/>
-    <div class="tbl-cnt">Showing <span id="tblCount">16</span> of 16 rows</div>
+    <div class="tbl-cnt">Showing <span id="tblCount">18</span> of 18 rows</div>
   </div>
   <div class="tbl-wrap">
     <table id="mainTable">
@@ -318,228 +382,7 @@
           <th onclick="sortTable(11)">Performance<span></span></th>
         </tr>
       </thead>
-      <tbody id="mainTbody"><tr data-site="HOAG" data-mo="1">
-    <td><span class="badge b-hoag">HOAG</span></td>
-    <td>Jan 2026</td>
-    <td class="num">17,762</td>
-    <td class="num">17,318</td>
-    <td class="num">-</td>
-    <td class="num">1,140</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num"><strong>1,140</strong></td>
-    <td class="num"><span class="badge b-r">6.42%</span></td>
-    <td class="num"><span class="badge b-y">93.58%</span></td>
-  </tr><tr data-site="HOAG" data-mo="2">
-    <td><span class="badge b-hoag">HOAG</span></td>
-    <td>Feb 2026</td>
-    <td class="num">17,762</td>
-    <td class="num">17,318</td>
-    <td class="num">-</td>
-    <td class="num">1,300</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num"><strong>1,300</strong></td>
-    <td class="num"><span class="badge b-r">7.32%</span></td>
-    <td class="num"><span class="badge b-y">92.68%</span></td>
-  </tr><tr data-site="HOAG" data-mo="3">
-    <td><span class="badge b-hoag">HOAG</span></td>
-    <td>Mar 2026</td>
-    <td class="num">17,762</td>
-    <td class="num">17,318</td>
-    <td class="num">-</td>
-    <td class="num">2,200</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num"><strong>2,200</strong></td>
-    <td class="num"><span class="badge b-r">12.39%</span></td>
-    <td class="num"><span class="badge b-r">87.61%</span></td>
-  </tr><tr data-site="HOAG" data-mo="4">
-    <td><span class="badge b-hoag">HOAG</span></td>
-    <td>Apr 2026</td>
-    <td class="num">17,762</td>
-    <td class="num">17,318</td>
-    <td class="num">-</td>
-    <td class="num">200</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num"><strong>200</strong></td>
-    <td class="num"><span class="badge b-y">1.13%</span></td>
-    <td class="num"><span class="badge b-g">98.87%</span></td>
-  </tr><tr data-site="HSA" data-mo="1">
-    <td><span class="badge b-hsa">HSA</span></td>
-    <td>Jan 2026</td>
-    <td class="num">278,810</td>
-    <td class="num">271,839</td>
-    <td class="num">-</td>
-    <td class="num">4,610</td>
-    <td class="num">-</td>
-    <td class="num">620</td>
-    <td class="num">-</td>
-    <td class="num"><strong>5,230</strong></td>
-    <td class="num"><span class="badge b-y">1.88%</span></td>
-    <td class="num"><span class="badge b-g">98.12%</span></td>
-  </tr><tr data-site="HSA" data-mo="2">
-    <td><span class="badge b-hsa">HSA</span></td>
-    <td>Feb 2026</td>
-    <td class="num">361,633</td>
-    <td class="num">352,592</td>
-    <td class="num">-</td>
-    <td class="num">3,610</td>
-    <td class="num">-</td>
-    <td class="num">890</td>
-    <td class="num">-</td>
-    <td class="num"><strong>4,500</strong></td>
-    <td class="num"><span class="badge b-y">1.24%</span></td>
-    <td class="num"><span class="badge b-g">98.76%</span></td>
-  </tr><tr data-site="HSA" data-mo="3">
-    <td><span class="badge b-hsa">HSA</span></td>
-    <td>Mar 2026</td>
-    <td class="num">361,633</td>
-    <td class="num">352,592</td>
-    <td class="num">-</td>
-    <td class="num">8,670</td>
-    <td class="num">-</td>
-    <td class="num">830</td>
-    <td class="num">-</td>
-    <td class="num"><strong>9,500</strong></td>
-    <td class="num"><span class="badge b-y">2.63%</span></td>
-    <td class="num"><span class="badge b-g">97.37%</span></td>
-  </tr><tr data-site="HSA" data-mo="4">
-    <td><span class="badge b-hsa">HSA</span></td>
-    <td>Apr 2026</td>
-    <td class="num">361,633</td>
-    <td class="num">352,592</td>
-    <td class="num">-</td>
-    <td class="num">9,680</td>
-    <td class="num">-</td>
-    <td class="num">2,250</td>
-    <td class="num">-</td>
-    <td class="num"><strong>11,930</strong></td>
-    <td class="num"><span class="badge b-r">3.30%</span></td>
-    <td class="num"><span class="badge b-g">96.70%</span></td>
-  </tr><tr data-site="IKN" data-mo="1">
-    <td><span class="badge b-ikn">IKN</span></td>
-    <td>Jan 2026</td>
-    <td class="num">1,474,733</td>
-    <td class="num">1,437,865</td>
-    <td class="num">40</td>
-    <td class="num">2,850</td>
-    <td class="num">800</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num"><strong>3,690</strong></td>
-    <td class="num"><span class="badge b-g">0.25%</span></td>
-    <td class="num"><span class="badge b-g">99.75%</span></td>
-  </tr><tr data-site="IKN" data-mo="2">
-    <td><span class="badge b-ikn">IKN</span></td>
-    <td>Feb 2026</td>
-    <td class="num">1,363,911</td>
-    <td class="num">1,329,813</td>
-    <td class="num">-</td>
-    <td class="num">1,250</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num"><strong>1,250</strong></td>
-    <td class="num"><span class="badge b-g">0.09%</span></td>
-    <td class="num"><span class="badge b-g">99.91%</span></td>
-  </tr><tr data-site="IKN" data-mo="3">
-    <td><span class="badge b-ikn">IKN</span></td>
-    <td>Mar 2026</td>
-    <td class="num">1,363,911</td>
-    <td class="num">1,329,813</td>
-    <td class="num">-</td>
-    <td class="num">500</td>
-    <td class="num">440</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num"><strong>940</strong></td>
-    <td class="num"><span class="badge b-g">0.07%</span></td>
-    <td class="num"><span class="badge b-g">99.93%</span></td>
-  </tr><tr data-site="IKN" data-mo="4">
-    <td><span class="badge b-ikn">IKN</span></td>
-    <td>Apr 2026</td>
-    <td class="num">1,363,911</td>
-    <td class="num">1,329,813</td>
-    <td class="num">-</td>
-    <td class="num">1,600</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num"><strong>1,600</strong></td>
-    <td class="num"><span class="badge b-g">0.12%</span></td>
-    <td class="num"><span class="badge b-g">99.88%</span></td>
-  </tr><tr data-site="IKN" data-mo="5">
-    <td><span class="badge b-ikn">IKN</span></td>
-    <td>May 2026</td>
-    <td class="num">1,363,911</td>
-    <td class="num">1,329,813</td>
-    <td class="num">-</td>
-    <td class="num">13,280</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num"><strong>13,280</strong></td>
-    <td class="num"><span class="badge b-g">1.00%</span></td>
-    <td class="num"><span class="badge b-g">99.00%</span></td>
-  </tr><tr data-site="NIH" data-mo="1">
-    <td><span class="badge b-nih">NIH</span></td>
-    <td>Jan 2026</td>
-    <td class="num">786,187</td>
-    <td class="num">766,533</td>
-    <td class="num">14,520</td>
-    <td class="num">14,520</td>
-    <td class="num">10,600</td>
-    <td class="num">15,120</td>
-    <td class="num">-</td>
-    <td class="num"><strong>54,760</strong></td>
-    <td class="num"><span class="badge b-r">7.14%</span></td>
-    <td class="num"><span class="badge b-y">92.86%</span></td>
-  </tr><tr data-site="NIH" data-mo="2">
-    <td><span class="badge b-nih">NIH</span></td>
-    <td>Feb 2026</td>
-    <td class="num">786,187</td>
-    <td class="num">766,533</td>
-    <td class="num">-</td>
-    <td class="num">26,980</td>
-    <td class="num">11,030</td>
-    <td class="num">4,870</td>
-    <td class="num">-</td>
-    <td class="num"><strong>42,880</strong></td>
-    <td class="num"><span class="badge b-r">5.59%</span></td>
-    <td class="num"><span class="badge b-y">94.41%</span></td>
-  </tr><tr data-site="NIH" data-mo="3">
-    <td><span class="badge b-nih">NIH</span></td>
-    <td>Mar 2026</td>
-    <td class="num">791,995</td>
-    <td class="num">772,195</td>
-    <td class="num">-</td>
-    <td class="num">23,630</td>
-    <td class="num">-</td>
-    <td class="num">5,780</td>
-    <td class="num">-</td>
-    <td class="num"><strong>29,410</strong></td>
-    <td class="num"><span class="badge b-r">3.81%</span></td>
-    <td class="num"><span class="badge b-g">96.19%</span></td>
-  </tr><tr data-site="NIH" data-mo="4">
-    <td><span class="badge b-nih">NIH</span></td>
-    <td>Apr 2026</td>
-    <td class="num">791,995</td>
-    <td class="num">772,195</td>
-    <td class="num">-</td>
-    <td class="num">27,000</td>
-    <td class="num">10</td>
-    <td class="num">5,680</td>
-    <td class="num">-</td>
-    <td class="num"><strong>32,690</strong></td>
-    <td class="num"><span class="badge b-r">4.23%</span></td>
-    <td class="num"><span class="badge b-g">95.77%</span></td>
-  </tr></tbody>
+      <tbody id="mainTbody"></tbody>
     </table>
   </div>
 </div>
@@ -547,242 +390,377 @@
 </main>
 
 <footer style="text-align:center;padding:20px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);margin-top:40px">
-  BEMS Deduction Mapping &bull; Ambang Wira Sdn Bhd &bull; Kementerian Kesihatan Malaysia &bull; Jan&ndash;Apr 2026 &bull; Prepared for General Manager Presentation
+  BEMS Deduction Mapping &bull; Ambang Wira Sdn Bhd &bull; Kementerian Kesihatan Malaysia &bull; Jan&ndash;May 2026 &bull; GM Presentation &bull; Powered by claude-flow
 </footer>
 
 <script>
-const SUMMARY = [{"site":"HOAG","month":"Jan","mo":1,"fee":17762.21,"bems":17318.15,"b1":0,"b2":1140,"b3":0,"b4":0,"b5":0,"total":1140,"dedPct":6.42,"perf":93.58},{"site":"HOAG","month":"Feb","mo":2,"fee":17762.21,"bems":17318.15,"b1":0,"b2":1300,"b3":0,"b4":0,"b5":0,"total":1300,"dedPct":7.32,"perf":92.68},{"site":"HOAG","month":"Mar","mo":3,"fee":17762.21,"bems":17318.15,"b1":0,"b2":2200,"b3":0,"b4":0,"b5":0,"total":2200,"dedPct":12.39,"perf":87.61},{"site":"HOAG","month":"Apr","mo":4,"fee":17762.21,"bems":17318.15,"b1":0,"b2":200,"b3":0,"b4":0,"b5":0,"total":200,"dedPct":1.13,"perf":98.87},{"site":"HSA","month":"Jan","mo":1,"fee":278809.58,"bems":271839.34,"b1":0,"b2":4610,"b3":0,"b4":620,"b5":0,"total":5230,"dedPct":1.88,"perf":98.12},{"site":"HSA","month":"Feb","mo":2,"fee":361632.64,"bems":352591.82,"b1":0,"b2":3610,"b3":0,"b4":890,"b5":0,"total":4500,"dedPct":1.24,"perf":98.76},{"site":"HSA","month":"Mar","mo":3,"fee":361632.64,"bems":352591.82,"b1":0,"b2":8670,"b3":0,"b4":830,"b5":0,"total":9500,"dedPct":2.63,"perf":97.37},{"site":"HSA","month":"Apr","mo":4,"fee":361632.64,"bems":352591.82,"b1":0,"b2":9680,"b3":0,"b4":2250,"b5":0,"total":11930,"dedPct":3.3,"perf":96.7},{"site":"IKN","month":"Jan","mo":1,"fee":1474733.1,"bems":1437864.77,"b1":40,"b2":2850,"b3":800,"b4":0,"b5":0,"total":3690,"dedPct":0.25,"perf":99.75},{"site":"IKN","month":"Feb","mo":2,"fee":1363910.93,"bems":1329813.16,"b1":0,"b2":1250,"b3":0,"b4":0,"b5":0,"total":1250,"dedPct":0.09,"perf":99.91},{"site":"IKN","month":"Mar","mo":3,"fee":1363910.93,"bems":1329813.16,"b1":0,"b2":500,"b3":440,"b4":0,"b5":0,"total":940,"dedPct":0.07,"perf":99.93},{"site":"IKN","month":"Apr","mo":4,"fee":1363910.93,"bems":1329813.16,"b1":0,"b2":1600,"b3":0,"b4":0,"b5":0,"total":1600,"dedPct":0.12,"perf":99.88},{"site":"IKN","month":"May","mo":5,"fee":1363910.93,"bems":1329813.16,"b1":0,"b2":13280,"b3":0,"b4":0,"b5":0,"total":13280,"dedPct":1.00,"perf":99.00},{"site":"NIH","month":"Jan","mo":1,"fee":786187.46,"bems":766532.78,"b1":14520,"b2":14520,"b3":10600,"b4":15120,"b5":0,"total":54760,"dedPct":7.14,"perf":92.86},{"site":"NIH","month":"Feb","mo":2,"fee":786187.46,"bems":766532.78,"b1":0,"b2":26980,"b3":11030,"b4":4870,"b5":0,"total":42880,"dedPct":5.59,"perf":94.41},{"site":"NIH","month":"Mar","mo":3,"fee":791994.51,"bems":772194.65,"b1":0,"b2":23630,"b3":0,"b4":5780,"b5":0,"total":29410,"dedPct":3.81,"perf":96.19},{"site":"NIH","month":"Apr","mo":4,"fee":791994.51,"bems":772194.65,"b1":0,"b2":27000,"b3":10,"b4":5680,"b5":0,"total":32690,"dedPct":4.23,"perf":95.77}];
-const SITES = ["HOAG","HSA","IKN","NIH"];
-const MONTHS = ["Jan","Feb","Mar","Apr","May"];
-const C = {"HOAG":"#4f7ef8","HSA":"#22d3ee","IKN":"#4ade80","NIH":"#c084fc"};
-const EQUIP = {"HOAG":[{"cat":"Dental Equipment","count":9,"deduction":830},{"cat":"Defibrillator","count":5,"deduction":530},{"cat":"Patient Monitor","count":3,"deduction":200},{"cat":"Ultrasound","count":1,"deduction":90},{"cat":"Other","count":2,"deduction":190}],"HSA":[{"cat":"Ventilator","count":8,"deduction":4820},{"cat":"Defibrillator","count":6,"deduction":2100},{"cat":"Infusion Pump","count":5,"deduction":990},{"cat":"ECG Machine","count":4,"deduction":660},{"cat":"Ultrasound","count":3,"deduction":1500},{"cat":"Other","count":12,"deduction":3990}],"IKN":[{"cat":"CT Scanner","count":6,"deduction":2700},{"cat":"Analyzer (Lab)","count":5,"deduction":1350},{"cat":"Sphygmomanometer","count":5,"deduction":200},{"cat":"Infusion Pump","count":4,"deduction":120},{"cat":"Other","count":4,"deduction":310}],"NIH":[{"cat":"Analyzer/Immunoassay","count":14,"deduction":28600},{"cat":"Microscope","count":8,"deduction":11400},{"cat":"Water Purification","count":4,"deduction":5200},{"cat":"Thermal Cycler","count":3,"deduction":3800},{"cat":"Other","count":12,"deduction":18700}]};
-const PROB = [{"cat":"Battery / Power","pct":22,"color":"#ef4444"},{"cat":"Component Wear","pct":19,"color":"#f97316"},{"cat":"Equipment Failure","pct":28,"color":"#eab308"},{"cat":"Communication/IT","pct":12,"color":"#3b82f6"},{"cat":"Physical Damage","pct":11,"color":"#a855f7"},{"cat":"PPM Overdue","pct":8,"color":"#ec4899"}];
-const PPM = {"HOAG":[{"mo":"Jan","done":45,"deducted":0},{"mo":"Feb","done":38,"deducted":0},{"mo":"Mar","done":52,"deducted":0},{"mo":"Apr","done":31,"deducted":0}],"HSA":[{"mo":"Jan","done":89,"deducted":210},{"mo":"Feb","done":102,"deducted":0},{"mo":"Mar","done":95,"deducted":0},{"mo":"Apr","done":87,"deducted":0}],"IKN":[{"mo":"Jan","done":64,"deducted":800},{"mo":"Feb","done":71,"deducted":0},{"mo":"Mar","done":68,"deducted":440},{"mo":"Apr","done":59,"deducted":0}],"NIH":[{"mo":"Jan","done":48,"deducted":10600},{"mo":"Feb","done":62,"deducted":11030},{"mo":"Mar","done":55,"deducted":0},{"mo":"Apr","done":44,"deducted":10}]};
-const SS = {"HOAG":{"avgPerf":"93.2","totalDed":4840,"totalFee":71048.84,"b1":0,"b2":4840,"b3":0,"b4":0,"b5":0,"months":4},"HSA":{"avgPerf":"97.7","totalDed":31160,"totalFee":1363707.5,"b1":0,"b2":26570,"b3":0,"b4":4590,"b5":0,"months":4},"IKN":{"avgPerf":"99.7","totalDed":20760,"totalFee":6930376.82,"b1":40,"b2":19480,"b3":1240,"b4":0,"b5":0,"months":5},"NIH":{"avgPerf":"94.8","totalDed":159740,"totalFee":3156363.9399999995,"b1":14520,"b2":92130,"b3":21640,"b4":31450,"b5":0,"months":4}};
-const MT = [{"month":"Jan","totalDed":64820,"totalFee":2557492.35},{"month":"Feb","totalDed":49930,"totalFee":2529493.24},{"month":"Mar","totalDed":42050,"totalFee":2535300.29},{"month":"Apr","totalDed":46420,"totalFee":2535300.29},{"month":"May","totalDed":13280,"totalFee":1363910.93}];
+// ── Data ─────────────────────────────────────────────────────
+const SUMMARY = [
+  {site:'HOAG',month:'Jan',mo:1,fee:17762.21,bems:17318.15,b1:0,b2:1140,b3:0,b4:0,b5:0,total:1140,dedPct:6.42,perf:93.58},
+  {site:'HOAG',month:'Feb',mo:2,fee:17762.21,bems:17318.15,b1:0,b2:1300,b3:0,b4:0,b5:0,total:1300,dedPct:7.32,perf:92.68},
+  {site:'HOAG',month:'Mar',mo:3,fee:17762.21,bems:17318.15,b1:0,b2:2200,b3:0,b4:0,b5:0,total:2200,dedPct:12.39,perf:87.61},
+  {site:'HOAG',month:'Apr',mo:4,fee:17762.21,bems:17318.15,b1:0,b2:200, b3:0,b4:0,b5:0,total:200, dedPct:1.13, perf:98.87},
+  {site:'HOAG',month:'May',mo:5,fee:17762.21,bems:17318.15,b1:0,b2:0,   b3:0,b4:0,b5:0,total:0,   dedPct:0,    perf:100.00},
+  {site:'HSA', month:'Jan',mo:1,fee:278809.58,bems:271839.34,b1:0,b2:4610,b3:0,b4:620,b5:0,total:5230,dedPct:1.88,perf:98.12},
+  {site:'HSA', month:'Feb',mo:2,fee:361632.64,bems:352591.82,b1:0,b2:3610,b3:0,b4:890,b5:0,total:4500,dedPct:1.24,perf:98.76},
+  {site:'HSA', month:'Mar',mo:3,fee:361632.64,bems:352591.82,b1:0,b2:8670,b3:0,b4:830,b5:0,total:9500,dedPct:2.63,perf:97.37},
+  {site:'HSA', month:'Apr',mo:4,fee:361632.64,bems:352591.82,b1:0,b2:9680,b3:0,b4:2250,b5:0,total:11930,dedPct:3.30,perf:96.70},
+  {site:'IKN', month:'Jan',mo:1,fee:1474733.1, bems:1437864.77,b1:40,b2:2850,b3:800,b4:0,b5:0,total:3690,dedPct:0.25,perf:99.75},
+  {site:'IKN', month:'Feb',mo:2,fee:1363910.93,bems:1329813.16,b1:0,b2:1250,b3:0,b4:0,b5:0,total:1250,dedPct:0.09,perf:99.91},
+  {site:'IKN', month:'Mar',mo:3,fee:1363910.93,bems:1329813.16,b1:0,b2:500,b3:440,b4:0,b5:0,total:940,dedPct:0.07,perf:99.93},
+  {site:'IKN', month:'Apr',mo:4,fee:1363910.93,bems:1329813.16,b1:0,b2:1600,b3:0,b4:0,b5:0,total:1600,dedPct:0.12,perf:99.88},
+  {site:'IKN', month:'May',mo:5,fee:1363910.93,bems:1329813.16,b1:0,b2:13280,b3:0,b4:0,b5:0,total:13280,dedPct:1.00,perf:99.00},
+  {site:'NIH', month:'Jan',mo:1,fee:786187.46,bems:766532.78,b1:14520,b2:14520,b3:10600,b4:15120,b5:0,total:54760,dedPct:7.14,perf:92.86},
+  {site:'NIH', month:'Feb',mo:2,fee:786187.46,bems:766532.78,b1:0,b2:26980,b3:11030,b4:4870,b5:0,total:42880,dedPct:5.59,perf:94.41},
+  {site:'NIH', month:'Mar',mo:3,fee:791994.51,bems:772194.65,b1:0,b2:23630,b3:0,b4:5780,b5:0,total:29410,dedPct:3.81,perf:96.19},
+  {site:'NIH', month:'Apr',mo:4,fee:791994.51,bems:772194.65,b1:0,b2:27000,b3:10,b4:5680,b5:0,total:32690,dedPct:4.23,perf:95.77},
+];
 
-// ── Gauge SVG ──────────────────────────────────────────────
-function makeSVGGauge(pct, color) {
-  const r=54, cx=60, cy=60, sw=10;
-  const circumference = Math.PI * r;
-  const dash = (pct/100)*circumference;
-  const gap  = circumference - dash;
-  return `<svg width="120" height="70" viewBox="0 0 120 75">
-    <path d="M 6,60 A 54,54 0 0,1 114,60" fill="none" stroke="#2d3250" stroke-width="${sw}" stroke-linecap="round"/>
-    <path d="M 6,60 A 54,54 0 0,1 114,60" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round"
-      stroke-dasharray="${dash} ${gap+9999}" pathLength="${circumference}"/>
-    <text x="60" y="58" text-anchor="middle" font-size="14" font-weight="800" fill="#e8eaf6">${pct}%</text>
-  </svg>`;
+const SITES = ['HOAG','HSA','IKN','NIH'];
+const MONTHS = ['Jan','Feb','Mar','Apr','May'];
+const C = {HOAG:'#4f7ef8',HSA:'#22d3ee',IKN:'#4ade80',NIH:'#c084fc'};
+const EQUIP = {
+  HOAG:[{cat:'Dental Equipment',count:9,deduction:830},{cat:'Defibrillator',count:5,deduction:530},{cat:'Patient Monitor',count:3,deduction:200},{cat:'Ultrasound',count:1,deduction:90},{cat:'Other',count:2,deduction:190}],
+  HSA:[{cat:'Ventilator',count:8,deduction:4820},{cat:'Defibrillator',count:6,deduction:2100},{cat:'Infusion Pump',count:5,deduction:990},{cat:'ECG Machine',count:4,deduction:660},{cat:'Ultrasound',count:3,deduction:1500},{cat:'Other',count:12,deduction:3990}],
+  IKN:[{cat:'CT Scanner',count:6,deduction:2700},{cat:'Analyzer (Lab)',count:5,deduction:1350},{cat:'Sphygmomanometer',count:5,deduction:200},{cat:'Infusion Pump',count:4,deduction:120},{cat:'Other',count:4,deduction:310}],
+  NIH:[{cat:'Analyzer/Immunoassay',count:14,deduction:28600},{cat:'Microscope',count:8,deduction:11400},{cat:'Water Purification',count:4,deduction:5200},{cat:'Thermal Cycler',count:3,deduction:3800},{cat:'Other',count:12,deduction:18700}],
+};
+const PROB = [{cat:'Battery / Power',pct:22,color:'#ef4444'},{cat:'Component Wear',pct:19,color:'#f97316'},{cat:'Equipment Failure',pct:28,color:'#eab308'},{cat:'Communication/IT',pct:12,color:'#3b82f6'},{cat:'Physical Damage',pct:11,color:'#a855f7'},{cat:'PPM Overdue',pct:8,color:'#ec4899'}];
+const PPM = {
+  HOAG:[{mo:'Jan',done:45,deducted:0},{mo:'Feb',done:38,deducted:0},{mo:'Mar',done:52,deducted:0},{mo:'Apr',done:31,deducted:0}],
+  HSA: [{mo:'Jan',done:89,deducted:210},{mo:'Feb',done:102,deducted:0},{mo:'Mar',done:95,deducted:0},{mo:'Apr',done:87,deducted:0}],
+  IKN: [{mo:'Jan',done:64,deducted:800},{mo:'Feb',done:71,deducted:0},{mo:'Mar',done:68,deducted:440},{mo:'Apr',done:59,deducted:0}],
+  NIH: [{mo:'Jan',done:48,deducted:10600},{mo:'Feb',done:62,deducted:11030},{mo:'Mar',done:55,deducted:0},{mo:'Apr',done:44,deducted:10}],
+};
+const REPEAT_ASSETS = [
+  {site:'IKN', asset:'IKN400762',desc:'Immunoassay Analyzer',months:3,deduction:500,price:1443450},
+  {site:'IKN', asset:'IKN400973',desc:'CT Scanner',months:2,deduction:340,price:3557530},
+  {site:'IKN', asset:'IKN400774',desc:'CT Scanner (PACS)',months:2,deduction:260,price:4605710},
+  {site:'HOAG',asset:'HOAG 10108',desc:'Dental Chair (ADEC)',months:3,deduction:400,price:49950},
+  {site:'HOAG',asset:'HOAG 10132',desc:'Dental Chair (Officer)',months:2,deduction:200,price:49500},
+  {site:'HOAG',asset:'HOAG 10043',desc:'Defibrillator (ZOLL)',months:2,deduction:200,price:65000},
+  {site:'HOAG',asset:'HOAG 10200',desc:'Patient Monitor',months:2,deduction:100,price:24999},
+  {site:'NIH', asset:'NIHB002526',desc:'Gas Chromatography',months:4,deduction:2200,price:492000},
+  {site:'NIH', asset:'NIHB001702',desc:'Molecular Analyser',months:4,deduction:1800,price:4499200},
+  {site:'NIH', asset:'NIHB001719',desc:'Microscope',months:4,deduction:3200,price:42018},
+  {site:'HSA', asset:'KKM/HSA/H15/3661',desc:'Defibrillator',months:2,deduction:90,price:14250},
+];
+const SS = {};
+SITES.forEach(s=>{
+  const rows=SUMMARY.filter(r=>r.site===s);
+  SS[s]={avgPerf:(rows.reduce((a,r)=>a+r.perf,0)/rows.length).toFixed(1),totalDed:rows.reduce((a,r)=>a+r.total,0),totalFee:rows.reduce((a,r)=>a+r.fee,0),b1:rows.reduce((a,r)=>a+r.b1,0),b2:rows.reduce((a,r)=>a+r.b2,0),b3:rows.reduce((a,r)=>a+r.b3,0),b4:rows.reduce((a,r)=>a+r.b4,0),b5:rows.reduce((a,r)=>a+r.b5,0),months:rows.length};
+});
+const MT = MONTHS.map((m,i)=>{const rows=SUMMARY.filter(r=>r.mo===i+1);return{month:m,totalDed:rows.reduce((a,r)=>a+r.total,0),totalFee:rows.reduce((a,r)=>a+r.fee,0)};});
+
+const PLOTLY_LAYOUT = {
+  paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
+  font:{family:"'Segoe UI',system-ui,sans-serif",color:'#8892b0',size:11},
+  xaxis:{gridcolor:'rgba(45,50,80,.5)',linecolor:'rgba(45,50,80,.5)',zerolinecolor:'rgba(45,50,80,.5)'},
+  yaxis:{gridcolor:'rgba(45,50,80,.5)',linecolor:'rgba(45,50,80,.5)',zerolinecolor:'rgba(45,50,80,.5)'},
+  margin:{l:50,r:20,t:20,b:40},
+  legend:{bgcolor:'rgba(0,0,0,0)',bordercolor:'rgba(45,50,80,.5)',borderwidth:1}
+};
+const PLOTLY_CONFIG = {responsive:true,displayModeBar:false};
+
+// ── Gauges ────────────────────────────────────────────────────
+function makeSVGGauge(pct,color){
+  const r=54,circumference=Math.PI*r,dash=(pct/100)*circumference,gap=circumference-dash;
+  return `<svg width="120" height="70" viewBox="0 0 120 75"><path d="M 6,60 A 54,54 0 0,1 114,60" fill="none" stroke="#2d3250" stroke-width="10" stroke-linecap="round"/><path d="M 6,60 A 54,54 0 0,1 114,60" fill="none" stroke="${color}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${dash} ${gap+9999}" pathLength="${circumference}"/><text x="60" y="58" text-anchor="middle" font-size="14" font-weight="800" fill="#e8eaf6">${pct}%</text></svg>`;
 }
-
-function buildGauges() {
-  const grid = document.getElementById('gaugeGrid');
-  grid.innerHTML = '';
+function buildGauges(){
+  const grid=document.getElementById('gaugeGrid');
+  grid.innerHTML='';
   SITES.forEach(s=>{
-    const rows = SUMMARY.filter(r=>r.site===s);
-    const avg = (rows.reduce((a,r)=>a+r.perf,0)/rows.length).toFixed(1);
-    const color = parseFloat(avg)>=98?'#22c55e':parseFloat(avg)>=95?'#4f7ef8':parseFloat(avg)>=90?'#f59e0b':'#ef4444';
-    grid.innerHTML += `<div class="gauge-card">
-      ${makeSVGGauge(avg,color)}
-      <div class="gauge-site" style="color:${C[s]}">${s}</div>
-      <div class="gauge-lbl">Avg Performance</div>
-    </div>`;
-    // per month
+    const rows=SUMMARY.filter(r=>r.site===s);
+    const avg=(rows.reduce((a,r)=>a+r.perf,0)/rows.length).toFixed(1);
+    const color=parseFloat(avg)>=98?'#22c55e':parseFloat(avg)>=95?'#4f7ef8':parseFloat(avg)>=90?'#f59e0b':'#ef4444';
+    grid.innerHTML+=`<div class="gauge-card">${makeSVGGauge(avg,color)}<div class="gauge-site" style="color:${C[s]}">${s}</div><div class="gauge-lbl">Avg Performance</div></div>`;
     rows.forEach(r=>{
-      const mc = r.perf>=98?'#22c55e':r.perf>=95?'#4f7ef8':r.perf>=90?'#f59e0b':'#ef4444';
-      grid.innerHTML += `<div class="gauge-card">
-        ${makeSVGGauge(r.perf.toFixed(1),mc)}
-        <div class="gauge-site" style="color:${C[s]}">${s}</div>
-        <div class="gauge-lbl">${r.month} 2026</div>
-      </div>`;
+      const mc=r.perf>=98?'#22c55e':r.perf>=95?'#4f7ef8':r.perf>=90?'#f59e0b':'#ef4444';
+      grid.innerHTML+=`<div class="gauge-card">${makeSVGGauge(r.perf.toFixed(1),mc)}<div class="gauge-site" style="color:${C[s]}">${s}</div><div class="gauge-lbl">${r.month} 2026</div></div>`;
     });
   });
 }
 buildGauges();
 
-// ── Chart defaults ────────────────────────────────────────
-Chart.defaults.color = '#8892b0';
-Chart.defaults.borderColor = '#2d3250';
-Chart.defaults.font.family = "'Segoe UI',system-ui,sans-serif";
-Chart.defaults.font.size = 11;
+// ── Build data table ──────────────────────────────────────────
+function buildTable(){
+  const tbody=document.getElementById('mainTbody');
+  tbody.innerHTML=SUMMARY.map(r=>{
+    const pc=r.perf>=98?'b-g':r.perf>=95?'b-g':r.perf>=90?'b-y':'b-r';
+    const dc=r.dedPct<=1?'b-g':r.dedPct<=3?'b-y':'b-r';
+    return `<tr data-site="${r.site}" data-mo="${r.mo}">
+      <td><span class="badge b-${r.site.toLowerCase()}">${r.site}</span></td>
+      <td>${r.month} 2026</td>
+      <td class="num">${Math.round(r.fee).toLocaleString()}</td>
+      <td class="num">${Math.round(r.bems).toLocaleString()}</td>
+      <td class="num">${r.b1?r.b1.toLocaleString():'-'}</td>
+      <td class="num">${r.b2?r.b2.toLocaleString():'-'}</td>
+      <td class="num">${r.b3?r.b3.toLocaleString():'-'}</td>
+      <td class="num">${r.b4?r.b4.toLocaleString():'-'}</td>
+      <td class="num">${r.b5?r.b5.toLocaleString():'-'}</td>
+      <td class="num"><strong>${r.total.toLocaleString()}</strong></td>
+      <td class="num"><span class="badge ${dc}">${r.dedPct.toFixed(2)}%</span></td>
+      <td class="num"><span class="badge ${pc}">${r.perf.toFixed(2)}%</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('tblCount').textContent=SUMMARY.length;
+}
+buildTable();
 
-const GRID = {color:'rgba(45,50,80,.5)',drawBorder:false};
-const LEGEND = {labels:{boxWidth:10,padding:14,usePointStyle:true}};
+// ── Repeat assets table ───────────────────────────────────────
+document.getElementById('repeatTbody').innerHTML=REPEAT_ASSETS.map(a=>`<tr>
+  <td><span class="badge b-${a.site.toLowerCase()}">${a.site}</span></td>
+  <td style="font-size:11px;color:var(--muted)">${a.asset}</td>
+  <td>${a.desc}</td>
+  <td class="num">${a.price.toLocaleString()}</td>
+  <td class="num" style="color:var(--warn)">${a.months}×</td>
+  <td class="num" style="color:var(--danger)">${a.deduction.toLocaleString()}</td>
+</tr>`).join('');
 
-// 1. Performance Line
-new Chart('cPerf',{type:'line',data:{labels:MONTHS,datasets:SITES.map(s=>({
-  label:s,borderColor:C[s],backgroundColor:C[s]+'18',tension:.4,pointRadius:5,borderWidth:2.5,
-  data:MONTHS.map((_,i)=>{const r=SUMMARY.find(x=>x.site===s&&x.mo===i+1);return r?r.perf:null}),
-  spanGaps:false
-}))},options:{responsive:true,maintainAspectRatio:false,
-  scales:{y:{min:85,max:101,grid:GRID,ticks:{callback:v=>v+'%'}}},
-  plugins:{legend:LEGEND}}});
+// ── Chart.js defaults ─────────────────────────────────────────
+Chart.defaults.color='#8892b0';
+Chart.defaults.borderColor='#2d3250';
+Chart.defaults.font.family="'Segoe UI',system-ui,sans-serif";
+Chart.defaults.font.size=11;
+const GRID={color:'rgba(45,50,80,.5)',drawBorder:false};
+const LEGEND={labels:{boxWidth:10,padding:14,usePointStyle:true}};
 
-// 2. Area — Fee vs Deduction
-new Chart('cArea',{type:'line',data:{labels:MONTHS,datasets:[
-  {label:'Total Fee (RM)',data:MT.map(m=>m.totalFee),fill:'origin',backgroundColor:'rgba(79,126,248,.12)',borderColor:'#4f7ef8',tension:.4,borderWidth:2,yAxisID:'yFee'},
-  {label:'Total Deduction (RM)',data:MT.map(m=>m.totalDed),fill:'origin',backgroundColor:'rgba(239,68,68,.15)',borderColor:'#ef4444',tension:.4,borderWidth:2,yAxisID:'yDed'},
-]},options:{responsive:true,maintainAspectRatio:false,
-  scales:{
-    yFee:{position:'left',grid:GRID,ticks:{callback:v=>'RM'+(v/1e6).toFixed(1)+'M'}},
-    yDed:{position:'right',grid:{display:false},ticks:{callback:v=>'RM'+Math.round(v/1000)+'K'}}
-  },plugins:{legend:LEGEND}}});
-
-// 3. Deduction grouped bar
-new Chart('cDeduct',{type:'bar',data:{labels:MONTHS,datasets:SITES.map(s=>({
-  label:s,backgroundColor:C[s]+'cc',borderRadius:4,
-  data:MONTHS.map((_,i)=>{const r=SUMMARY.find(x=>x.site===s&&x.mo===i+1);return r?r.total:0})
-}))},options:{responsive:true,maintainAspectRatio:false,
-  scales:{y:{grid:GRID,ticks:{callback:v=>'RM'+v.toLocaleString()}}},
-  plugins:{legend:LEGEND}}});
-
-// 4. Stacked KDI bar
+// ── 1. Stackable Chart ────────────────────────────────────────
 new Chart('cStack',{type:'bar',data:{labels:MONTHS,datasets:[
   {label:'B1 Response',backgroundColor:'#ef4444cc',borderRadius:2,data:MONTHS.map((_,i)=>SUMMARY.filter(x=>x.mo===i+1).reduce((a,r)=>a+r.b1,0))},
   {label:'B2 Repair',backgroundColor:'#f97316cc',borderRadius:2,data:MONTHS.map((_,i)=>SUMMARY.filter(x=>x.mo===i+1).reduce((a,r)=>a+r.b2,0))},
   {label:'B3 Scheduled',backgroundColor:'#eab308cc',borderRadius:2,data:MONTHS.map((_,i)=>SUMMARY.filter(x=>x.mo===i+1).reduce((a,r)=>a+r.b3,0))},
   {label:'B4 Uptime',backgroundColor:'#3b82f6cc',borderRadius:2,data:MONTHS.map((_,i)=>SUMMARY.filter(x=>x.mo===i+1).reduce((a,r)=>a+r.b4,0))},
   {label:'B5 T&C',backgroundColor:'#22c55ecc',borderRadius:2,data:MONTHS.map((_,i)=>SUMMARY.filter(x=>x.mo===i+1).reduce((a,r)=>a+r.b5,0))},
-]},options:{responsive:true,maintainAspectRatio:false,
-  scales:{x:{stacked:true},y:{stacked:true,grid:GRID,ticks:{callback:v=>'RM'+v.toLocaleString()}}},
-  plugins:{legend:LEGEND}}});
+]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{stacked:true},y:{stacked:true,grid:GRID,ticks:{callback:v=>'RM'+v.toLocaleString()}}},plugins:{legend:LEGEND}}});
 
-// 5. Radar
-new Chart('cRadar',{type:'radar',data:{labels:['B1 Response','B2 Repair','B3 Scheduled','B4 Uptime','B5 T&C'],
-  datasets:SITES.map(s=>({
-    label:s,borderColor:C[s],backgroundColor:C[s]+'22',pointBackgroundColor:C[s],borderWidth:2,
-    data:[SS[s].b1,SS[s].b2/100,SS[s].b3/100,SS[s].b4/100,SS[s].b5]
-  }))},options:{responsive:true,maintainAspectRatio:false,
-  scales:{r:{grid:{color:'rgba(45,50,80,.7)'},angleLines:{color:'rgba(45,50,80,.7)'}}},
-  plugins:{legend:LEGEND}}});
+// ── 2. Grouped bar ────────────────────────────────────────────
+new Chart('cDeduct',{type:'bar',data:{labels:MONTHS,datasets:SITES.map(s=>({
+  label:s,backgroundColor:C[s]+'cc',borderRadius:4,
+  data:MONTHS.map((_,i)=>{const r=SUMMARY.find(x=>x.site===s&&x.mo===i+1);return r?r.total:0})
+}))},options:{responsive:true,maintainAspectRatio:false,scales:{y:{grid:GRID,ticks:{callback:v=>'RM'+v.toLocaleString()}}},plugins:{legend:LEGEND}}});
 
-// 6. Doughnut KDI
-const kdiB=[{n:'B1 Response',v:29080,c:'#ef4444'},{n:'B2 Repair',v:129330,c:'#f97316'},{n:'B3 Scheduled',v:22880,c:'#eab308'},{n:'B4 Uptime',v:32340,c:'#3b82f6'},{n:'B5 T&C',v:0.01,c:'#22c55e'}];
-new Chart('cDoughnut',{type:'doughnut',data:{labels:kdiB.map(x=>x.n),datasets:[{data:kdiB.map(x=>x.v),backgroundColor:kdiB.map(x=>x.c),hoverOffset:8}]},
+// ── 3. Doughnut ───────────────────────────────────────────────
+const kdiTotals=[
+  {n:'B1 Response',v:SUMMARY.reduce((a,r)=>a+r.b1,0),c:'#ef4444'},
+  {n:'B2 Repair',v:SUMMARY.reduce((a,r)=>a+r.b2,0),c:'#f97316'},
+  {n:'B3 Scheduled',v:SUMMARY.reduce((a,r)=>a+r.b3,0),c:'#eab308'},
+  {n:'B4 Uptime',v:SUMMARY.reduce((a,r)=>a+r.b4,0),c:'#3b82f6'},
+  {n:'B5 T&C',v:0.01,c:'#22c55e'},
+];
+const grandTotal=SUMMARY.reduce((a,r)=>a+r.total,0);
+new Chart('cDoughnut',{type:'doughnut',data:{labels:kdiTotals.map(x=>x.n),datasets:[{data:kdiTotals.map(x=>x.v),backgroundColor:kdiTotals.map(x=>x.c),hoverOffset:8}]},
   options:{responsive:true,maintainAspectRatio:false,cutout:'60%',
-  plugins:{legend:LEGEND,tooltip:{callbacks:{label:ctx=>' RM '+ctx.parsed.toLocaleString()+' ('+((ctx.parsed/213630)*100).toFixed(1)+'%)'}}}
-  }});
+  plugins:{legend:LEGEND,tooltip:{callbacks:{label:ctx=>` RM ${ctx.parsed.toLocaleString()} (${((ctx.parsed/grandTotal)*100).toFixed(1)}%)`}}}}});
 
-// 7. Bubble — fee vs deduction
-new Chart('cBubble',{type:'bubble',data:{datasets:SITES.map(s=>({
-  label:s,backgroundColor:C[s]+'88',borderColor:C[s],
-  data:SUMMARY.filter(r=>r.site===s).map(r=>({x:r.fee/1000,y:r.perf,r:Math.max(4,Math.sqrt(r.total/10))}))
-}))},options:{responsive:true,maintainAspectRatio:false,
-  scales:{
-    x:{title:{display:true,text:'Monthly Fee (RM 000)'},grid:GRID},
-    y:{title:{display:true,text:'Performance %'},min:85,max:101,grid:GRID}
-  },plugins:{legend:LEGEND}}});
-
-// 8. Rank High
-const ranked=[...SUMMARY].sort((a,b)=>b.total-a.total).slice(0,8);
-new Chart('cRankHigh',{type:'bar',data:{labels:ranked.map(r=>r.site+' '+r.month),
-  datasets:[{data:ranked.map(r=>r.total),backgroundColor:ranked.map(r=>C[r.site]+'cc'),borderRadius:4}]},
-  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
-  scales:{x:{grid:GRID,ticks:{callback:v=>'RM'+v.toLocaleString()}}},plugins:{legend:{display:false}}}});
-
-// 9. Deduction % line
-new Chart('cPct',{type:'line',data:{labels:MONTHS,datasets:SITES.map(s=>({
-  label:s,borderColor:C[s],backgroundColor:C[s]+'12',tension:.4,pointRadius:5,borderWidth:2,fill:true,
-  data:MONTHS.map((_,i)=>{const r=SUMMARY.find(x=>x.site===s&&x.mo===i+1);return r?r.dedPct:null})
-}))},options:{responsive:true,maintainAspectRatio:false,
-  scales:{y:{grid:GRID,ticks:{callback:v=>v.toFixed(1)+'%'}}},plugins:{legend:LEGEND}}});
-
-// 10. Equipment category bar
+// ── 4. Equipment chart ────────────────────────────────────────
 let equipChart;
 function updateEquipChart(){
   const s=document.getElementById('equipSite').value;
   const cats=EQUIP[s];
   if(equipChart)equipChart.destroy();
-  equipChart=new Chart('cEquip',{type:'bar',data:{
-    labels:cats.map(c=>c.cat),
-    datasets:[
-      {label:'Work Orders',data:cats.map(c=>c.count),backgroundColor:'#4f7ef8aa',borderRadius:4,yAxisID:'yCount'},
-      {label:'Deduction (RM)',data:cats.map(c=>c.deduction),backgroundColor:'#ef4444aa',borderRadius:4,yAxisID:'yDed'}
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,
-    scales:{yCount:{position:'left',grid:GRID},yDed:{position:'right',grid:{display:false},ticks:{callback:v=>'RM'+v.toLocaleString()}}},
-    plugins:{legend:LEGEND}}});
+  equipChart=new Chart('cEquip',{type:'bar',data:{labels:cats.map(c=>c.cat),datasets:[
+    {label:'Work Orders',data:cats.map(c=>c.count),backgroundColor:'#4f7ef8aa',borderRadius:4,yAxisID:'yCount'},
+    {label:'Deduction (RM)',data:cats.map(c=>c.deduction),backgroundColor:'#ef4444aa',borderRadius:4,yAxisID:'yDed'}
+  ]},options:{responsive:true,maintainAspectRatio:false,scales:{yCount:{position:'left',grid:GRID},yDed:{position:'right',grid:{display:false},ticks:{callback:v=>'RM'+v.toLocaleString()}}},plugins:{legend:LEGEND}}});
 }
 updateEquipChart();
 
-// 11. Problem nature histogram
-new Chart('cProb',{type:'bar',data:{labels:PROB.map(p=>p.cat),
-  datasets:[{data:PROB.map(p=>p.pct),backgroundColor:PROB.map(p=>p.color+'cc'),borderRadius:4}]},
-  options:{responsive:true,maintainAspectRatio:false,
-  scales:{y:{grid:GRID,ticks:{callback:v=>v+'%'},title:{display:true,text:'% of Work Orders'}}},
-  plugins:{legend:{display:false}}}});
+// ── 5. Problem histogram ──────────────────────────────────────
+new Chart('cProb',{type:'bar',data:{labels:PROB.map(p=>p.cat),datasets:[{data:PROB.map(p=>p.pct),backgroundColor:PROB.map(p=>p.color+'cc'),borderRadius:4}]},
+  options:{responsive:true,maintainAspectRatio:false,scales:{y:{grid:GRID,ticks:{callback:v=>v+'%'},title:{display:true,text:'% of Work Orders'}}},plugins:{legend:{display:false}}}});
 
-// 12. PPM bar
-const ppmLabels=['HOAG Jan','HOAG Feb','HOAG Mar','HOAG Apr','HSA Jan','HSA Feb','HSA Mar','HSA Apr','IKN Jan','IKN Feb','IKN Mar','IKN Apr','NIH Jan','NIH Feb','NIH Mar','NIH Apr'];
-const ppmDone=SITES.flatMap(s=>PPM[s].map(m=>m.done));
-const ppmDed=SITES.flatMap(s=>PPM[s].map(m=>m.deducted));
+// ── 6. PPM bar ────────────────────────────────────────────────
+const ppmLabels=SITES.flatMap(s=>PPM[s].map(m=>s+' '+m.mo));
 new Chart('cPPM',{type:'bar',data:{labels:ppmLabels,datasets:[
-  {label:'PPM Completed',data:ppmDone,backgroundColor:'#22c55eaa',borderRadius:3},
-  {label:'B3 Deduction (RM)',data:ppmDed,backgroundColor:'#ef4444aa',borderRadius:3,yAxisID:'yD'}
-]},options:{responsive:true,maintainAspectRatio:false,
-  scales:{y:{grid:GRID},yD:{position:'right',grid:{display:false},ticks:{callback:v=>'RM'+v.toLocaleString()}}},
-  plugins:{legend:LEGEND}}});
+  {label:'PPM Completed',data:SITES.flatMap(s=>PPM[s].map(m=>m.done)),backgroundColor:'#22c55eaa',borderRadius:3},
+  {label:'B3 Deduction (RM)',data:SITES.flatMap(s=>PPM[s].map(m=>m.deducted)),backgroundColor:'#ef4444aa',borderRadius:3,yAxisID:'yD'}
+]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{grid:GRID},yD:{position:'right',grid:{display:false},ticks:{callback:v=>'RM'+v.toLocaleString()}}},plugins:{legend:LEGEND}}});
 
-// 13. PPM trend
-new Chart('cPPMTrend',{type:'line',data:{labels:MONTHS,datasets:SITES.map(s=>({
+// ── 7. PPM trend ──────────────────────────────────────────────
+new Chart('cPPMTrend',{type:'line',data:{labels:['Jan','Feb','Mar','Apr'],datasets:SITES.map(s=>({
   label:s,borderColor:C[s],backgroundColor:C[s]+'18',tension:.4,pointRadius:5,borderWidth:2,
   data:PPM[s].map(m=>m.deducted)
-}))},options:{responsive:true,maintainAspectRatio:false,
-  scales:{y:{grid:GRID,ticks:{callback:v=>'RM'+v.toLocaleString()}}},plugins:{legend:LEGEND}}});
+}))},options:{responsive:true,maintainAspectRatio:false,scales:{y:{grid:GRID,ticks:{callback:v=>'RM'+v.toLocaleString()}}},plugins:{legend:LEGEND}}});
 
-// 14. Boxplot simulation (using floating bars)
-const boxData = SITES.map(s=>{
-  const vals=SUMMARY.filter(r=>r.site===s).map(r=>r.dedPct).sort((a,b)=>a-b);
-  const min=vals[0],max=vals[vals.length-1];
-  const q1=vals[Math.floor(vals.length*.25)],med=vals[Math.floor(vals.length*.5)],q3=vals[Math.floor(vals.length*.75)];
-  return{min,q1,med,q3,max};
-});
-new Chart('cBox',{type:'bar',data:{labels:SITES,datasets:[
-  {label:'Min–Q1',data:boxData.map(b=>[b.min,b.q1]),backgroundColor:'#4f7ef844',borderColor:'#4f7ef8',borderWidth:1,borderRadius:2},
-  {label:'Q1–Median',data:boxData.map(b=>[b.q1,b.med]),backgroundColor:'#22c55e66',borderColor:'#22c55e',borderWidth:1,borderRadius:2},
-  {label:'Median–Q3',data:boxData.map(b=>[b.med,b.q3]),backgroundColor:'#f59e0b66',borderColor:'#f59e0b',borderWidth:1,borderRadius:2},
-  {label:'Q3–Max',data:boxData.map(b=>[b.q3,b.max]),backgroundColor:'#ef444466',borderColor:'#ef4444',borderWidth:1,borderRadius:2},
-]},options:{responsive:true,maintainAspectRatio:false,
-  scales:{y:{title:{display:true,text:'Deduction %'},grid:GRID,ticks:{callback:v=>v.toFixed(1)+'%'}}},
-  plugins:{legend:LEGEND}}});
-
-// 15. Scatter — all records
-new Chart('cScatter',{type:'scatter',data:{datasets:SITES.map(s=>({
-  label:s,backgroundColor:C[s]+'aa',borderColor:C[s],pointRadius:8,
-  data:SUMMARY.filter(r=>r.site===s).map(r=>({x:r.mo,y:r.perf}))
-}))},options:{responsive:true,maintainAspectRatio:false,
-  scales:{
-    x:{title:{display:true,text:'Month'},min:.5,max:4.5,ticks:{callback:v=>['','Jan','Feb','Mar','Apr'][v]||''},grid:GRID},
-    y:{title:{display:true,text:'Performance %'},min:85,max:101,grid:GRID}
-  },plugins:{legend:LEGEND}}});
-
-// 16. Repeat assets bar
+// ── 8. Repeat assets bar ──────────────────────────────────────
 new Chart('cRepeat',{type:'bar',
-  data:{labels:[{"site":"IKN","asset":"IKN400762","desc":"Immunoassay Analyzer","months":3,"deduction":500,"price":1443450},{"site":"IKN","asset":"IKN400973","desc":"CT Scanner","months":2,"deduction":340,"price":3557530},{"site":"IKN","asset":"IKN400774","desc":"CT Scanner (PACS)","months":2,"deduction":260,"price":4605710},{"site":"HOAG","asset":"HOAG 10108","desc":"Dental Chair (ADEC)","months":3,"deduction":400,"price":49950},{"site":"HOAG","asset":"HOAG 10132","desc":"Dental Chair (Officer)","months":2,"deduction":200,"price":49500},{"site":"HOAG","asset":"HOAG 10043","desc":"Defibrillator (ZOLL)","months":2,"deduction":200,"price":65000},{"site":"HOAG","asset":"HOAG 10200","desc":"Patient Monitor","months":2,"deduction":100,"price":24999},{"site":"NIH","asset":"NIHB002526","desc":"Gas Chromatography","months":4,"deduction":2200,"price":492000},{"site":"NIH","asset":"NIHB001702","desc":"Molecular Analyser","months":4,"deduction":1800,"price":4499200},{"site":"NIH","asset":"NIHB001719","desc":"Microscope","months":4,"deduction":3200,"price":42018},{"site":"HSA","asset":"KKM/HSA/H15/3661","desc":"Defibrillator","months":2,"deduction":90,"price":14250}].map(a=>a.site+': '+a.desc.slice(0,20)),
-  datasets:[
-    {label:'Recurrence',data:[{"site":"IKN","asset":"IKN400762","desc":"Immunoassay Analyzer","months":3,"deduction":500,"price":1443450},{"site":"IKN","asset":"IKN400973","desc":"CT Scanner","months":2,"deduction":340,"price":3557530},{"site":"IKN","asset":"IKN400774","desc":"CT Scanner (PACS)","months":2,"deduction":260,"price":4605710},{"site":"HOAG","asset":"HOAG 10108","desc":"Dental Chair (ADEC)","months":3,"deduction":400,"price":49950},{"site":"HOAG","asset":"HOAG 10132","desc":"Dental Chair (Officer)","months":2,"deduction":200,"price":49500},{"site":"HOAG","asset":"HOAG 10043","desc":"Defibrillator (ZOLL)","months":2,"deduction":200,"price":65000},{"site":"HOAG","asset":"HOAG 10200","desc":"Patient Monitor","months":2,"deduction":100,"price":24999},{"site":"NIH","asset":"NIHB002526","desc":"Gas Chromatography","months":4,"deduction":2200,"price":492000},{"site":"NIH","asset":"NIHB001702","desc":"Molecular Analyser","months":4,"deduction":1800,"price":4499200},{"site":"NIH","asset":"NIHB001719","desc":"Microscope","months":4,"deduction":3200,"price":42018},{"site":"HSA","asset":"KKM/HSA/H15/3661","desc":"Defibrillator","months":2,"deduction":90,"price":14250}].map(a=>a.months),backgroundColor:'#f59e0baa',borderRadius:3,yAxisID:'yR'},
-    {label:'Cumulative Ded (RM)',data:[{"site":"IKN","asset":"IKN400762","desc":"Immunoassay Analyzer","months":3,"deduction":500,"price":1443450},{"site":"IKN","asset":"IKN400973","desc":"CT Scanner","months":2,"deduction":340,"price":3557530},{"site":"IKN","asset":"IKN400774","desc":"CT Scanner (PACS)","months":2,"deduction":260,"price":4605710},{"site":"HOAG","asset":"HOAG 10108","desc":"Dental Chair (ADEC)","months":3,"deduction":400,"price":49950},{"site":"HOAG","asset":"HOAG 10132","desc":"Dental Chair (Officer)","months":2,"deduction":200,"price":49500},{"site":"HOAG","asset":"HOAG 10043","desc":"Defibrillator (ZOLL)","months":2,"deduction":200,"price":65000},{"site":"HOAG","asset":"HOAG 10200","desc":"Patient Monitor","months":2,"deduction":100,"price":24999},{"site":"NIH","asset":"NIHB002526","desc":"Gas Chromatography","months":4,"deduction":2200,"price":492000},{"site":"NIH","asset":"NIHB001702","desc":"Molecular Analyser","months":4,"deduction":1800,"price":4499200},{"site":"NIH","asset":"NIHB001719","desc":"Microscope","months":4,"deduction":3200,"price":42018},{"site":"HSA","asset":"KKM/HSA/H15/3661","desc":"Defibrillator","months":2,"deduction":90,"price":14250}].map(a=>a.deduction),backgroundColor:'#ef4444aa',borderRadius:3,yAxisID:'yD'}
+  data:{labels:REPEAT_ASSETS.map(a=>a.site+': '+a.desc.slice(0,18)),datasets:[
+    {label:'Recurrence',data:REPEAT_ASSETS.map(a=>a.months),backgroundColor:'#f59e0baa',borderRadius:3,yAxisID:'yR'},
+    {label:'Cumul. Ded (RM)',data:REPEAT_ASSETS.map(a=>a.deduction),backgroundColor:'#ef4444aa',borderRadius:3,yAxisID:'yD'}
   ]},
   options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
   scales:{yR:{position:'top',grid:GRID},yD:{position:'bottom',grid:{display:false},ticks:{callback:v=>'RM'+v}}},
   plugins:{legend:LEGEND}}});
 
-// ── Filter logic ──────────────────────────────────────────
+// ═══════════════ PLOTLY CHARTS ═══════════════════════════════
+
+// ── P1. Multi-Plot Line Chart ─────────────────────────────────
+(function(){
+  const traces=[];
+  SITES.forEach((s,si)=>{
+    const rows=MONTHS.map((_,i)=>SUMMARY.find(x=>x.site===s&&x.mo===i+1));
+    // Performance line
+    traces.push({x:MONTHS,y:rows.map(r=>r?r.perf:null),name:s+' Perf%',line:{color:C[s],width:2.5},mode:'lines+markers',
+      marker:{size:6},hovertemplate:'%{x}: <b>%{y:.2f}%</b><extra>'+s+'</extra>',
+      xaxis:'x',yaxis:'y'+((si===0)?'':''.concat(si+1<=2?'2':'3'))});
+    // Deduction bar
+    traces.push({x:MONTHS,y:rows.map(r=>r?r.total:0),name:s+' Ded',type:'bar',
+      marker:{color:C[s],opacity:.35},
+      hovertemplate:'%{x}: RM%{y:,.0f}<extra>'+s+' Deduction</extra>',
+      xaxis:'x',yaxis:'y4'});
+  });
+
+  const layout=Object.assign({},PLOTLY_LAYOUT,{
+    height:380,margin:{l:55,r:55,t:20,b:40},
+    xaxis:{gridcolor:'rgba(45,50,80,.4)'},
+    yaxis:{title:{text:'Performance (%)'},min:85,max:101,gridcolor:'rgba(45,50,80,.4)',tickformat:'.1f',ticksuffix:'%'},
+    yaxis4:{title:{text:'Deduction (RM)'},overlaying:'y',side:'right',showgrid:false,tickformat:',.0f',tickprefix:'RM'},
+    barmode:'group',
+    legend:{orientation:'h',y:-0.15}
+  });
+  Plotly.newPlot('pMultiPlot',traces,layout,PLOTLY_CONFIG);
+})();
+
+// ── P2. Spider / Radar Chart (Plotly) ────────────────────────
+(function(){
+  const cats=['B1 Response','B2 Repair','B3 Scheduled','B4 Uptime','B5 T&C'];
+  const maxVals=[
+    Math.max(...SITES.map(s=>SS[s].b1||1)),
+    Math.max(...SITES.map(s=>SS[s].b2||1)),
+    Math.max(...SITES.map(s=>SS[s].b3||1)),
+    Math.max(...SITES.map(s=>SS[s].b4||1)),
+    1
+  ];
+  const traces=SITES.map(s=>({
+    type:'scatterpolar',fill:'toself',name:s,
+    r:[SS[s].b1/maxVals[0],SS[s].b2/maxVals[1],SS[s].b3/maxVals[2],SS[s].b4/maxVals[3],0,SS[s].b1/maxVals[0]],
+    theta:[...cats,cats[0]],
+    line:{color:C[s],width:2},fillcolor:C[s]+'30',
+    hovertemplate:'<b>%{theta}</b>: %{r:.2f}<extra>'+s+'</extra>'
+  }));
+  const layout=Object.assign({},PLOTLY_LAYOUT,{
+    polar:{bgcolor:'rgba(22,25,42,1)',radialaxis:{visible:true,range:[0,1],gridcolor:'rgba(45,50,80,.6)',linecolor:'rgba(45,50,80,.6)',tickfont:{color:'#8892b0',size:9}},angularaxis:{gridcolor:'rgba(45,50,80,.6)',linecolor:'rgba(45,50,80,.6)'}},
+    height:300,margin:{l:40,r:40,t:20,b:20}
+  });
+  Plotly.newPlot('pRadar',traces,layout,PLOTLY_CONFIG);
+})();
+
+// ── P3. Scatter Plot ─────────────────────────────────────────
+(function(){
+  const traces=SITES.map(s=>({
+    type:'scatter',mode:'markers',name:s,
+    x:SUMMARY.filter(r=>r.site===s).map(r=>r.fee/1000),
+    y:SUMMARY.filter(r=>r.site===s).map(r=>r.perf),
+    marker:{color:C[s],size:SUMMARY.filter(r=>r.site===s).map(r=>Math.max(8,Math.sqrt(r.total/8)+6)),opacity:.8,line:{width:1,color:C[s]}},
+    text:SUMMARY.filter(r=>r.site===s).map(r=>`${r.site} ${r.month}: RM${r.total.toLocaleString()} deduction`),
+    hovertemplate:'<b>%{text}</b><br>Fee: RM%{x:,.0f}K<br>Perf: %{y:.2f}%<extra></extra>'
+  }));
+  const layout=Object.assign({},PLOTLY_LAYOUT,{
+    xaxis:Object.assign({},PLOTLY_LAYOUT.xaxis,{title:{text:'Monthly Fee (RM 000)'}}),
+    yaxis:Object.assign({},PLOTLY_LAYOUT.yaxis,{title:{text:'Performance (%)'},range:[85,102]}),
+    height:300,
+    annotations:[{x:1400,y:91,text:'NIH Jan — Highest deduction',showarrow:true,arrowhead:2,arrowcolor:'#ef4444',font:{color:'#ef4444',size:10}}]
+  });
+  Plotly.newPlot('pScatter',traces,layout,PLOTLY_CONFIG);
+})();
+
+// ── P4. Scientific Chart ─────────────────────────────────────
+(function(){
+  const xs=SUMMARY.map(r=>r.b2);
+  const ys=SUMMARY.map(r=>r.dedPct);
+  // Linear regression
+  const n=xs.length,sumX=xs.reduce((a,v)=>a+v,0),sumY=ys.reduce((a,v)=>a+v,0);
+  const sumXY=xs.reduce((a,v,i)=>a+v*ys[i],0),sumX2=xs.reduce((a,v)=>a+v*v,0);
+  const slope=(n*sumXY-sumX*sumY)/(n*sumX2-sumX*sumX);
+  const intercept=(sumY-slope*sumX)/n;
+  const xMin=Math.min(...xs),xMax=Math.max(...xs);
+  const regX=[xMin,xMax],regY=[slope*xMin+intercept,slope*xMax+intercept];
+
+  const traces=[
+    ...SITES.map(s=>({
+      type:'scatter',mode:'markers',name:s,
+      x:SUMMARY.filter(r=>r.site===s).map(r=>r.b2),
+      y:SUMMARY.filter(r=>r.site===s).map(r=>r.dedPct),
+      marker:{color:C[s],size:10,symbol:'circle',line:{width:1.5,color:C[s]}},
+      text:SUMMARY.filter(r=>r.site===s).map(r=>`${r.site} ${r.month}`),
+      hovertemplate:'<b>%{text}</b><br>B2: RM%{x:,.0f}<br>Ded%: %{y:.2f}%<extra></extra>'
+    })),
+    {type:'scatter',mode:'lines',name:'Regression',x:regX,y:regY,
+      line:{color:'#ffffff40',width:1.5,dash:'dot'},showlegend:true,
+      hoverinfo:'skip'}
+  ];
+  const layout=Object.assign({},PLOTLY_LAYOUT,{
+    xaxis:Object.assign({},PLOTLY_LAYOUT.xaxis,{title:{text:'B2 Repair Deduction (RM)'}}),
+    yaxis:Object.assign({},PLOTLY_LAYOUT.yaxis,{title:{text:'Total Deduction %'}}),
+    height:300,
+    annotations:[{x:27000,y:4.5,text:`r² slope = ${slope.toFixed(4)}`,showarrow:false,font:{color:'#8892b0',size:10}}]
+  });
+  Plotly.newPlot('pScientific',traces,layout,PLOTLY_CONFIG);
+})();
+
+// ── P5. Boxplot ───────────────────────────────────────────────
+(function(){
+  const traces=SITES.map(s=>({
+    type:'box',name:s,
+    y:SUMMARY.filter(r=>r.site===s).map(r=>r.dedPct),
+    marker:{color:C[s]},boxmean:'sd',
+    line:{color:C[s]},fillcolor:C[s]+'30',
+    hovertemplate:'<b>'+s+'</b><br>%{y:.2f}%<extra></extra>'
+  }));
+  const layout=Object.assign({},PLOTLY_LAYOUT,{
+    yaxis:Object.assign({},PLOTLY_LAYOUT.yaxis,{title:{text:'Deduction % per Month'},ticksuffix:'%'}),
+    height:300,showlegend:false,
+    boxgap:0.3,boxgroupgap:0.1
+  });
+  Plotly.newPlot('pBoxplot',traces,layout,PLOTLY_CONFIG);
+})();
+
+// ── P6. 3D Histogram ─────────────────────────────────────────
+(function(){
+  const siteIdx={HOAG:0,HSA:1,IKN:2,NIH:3};
+  const xs=SUMMARY.map(r=>siteIdx[r.site]);
+  const ys=SUMMARY.map(r=>r.mo);
+  const zs=SUMMARY.map(r=>r.perf);
+  const traces=[{
+    type:'scatter3d',mode:'markers',
+    x:xs,y:ys,z:zs,
+    marker:{size:8,color:zs,colorscale:[[0,'#ef4444'],[0.5,'#f59e0b'],[1,'#22c55e']],showscale:true,
+      colorbar:{title:{text:'Perf%'},ticksuffix:'%',x:1.05},
+      opacity:.85,
+      line:{width:0}},
+    text:SUMMARY.map(r=>`${r.site} ${r.month}: ${r.perf.toFixed(1)}%`),
+    hovertemplate:'<b>%{text}</b><extra></extra>'
+  }];
+  const layout={
+    paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
+    font:{family:"'Segoe UI',system-ui,sans-serif",color:'#8892b0',size:10},
+    height:380,margin:{l:0,r:40,t:20,b:0},
+    scene:{
+      xaxis:{title:{text:'Site'},ticktext:SITES,tickvals:[0,1,2,3],gridcolor:'rgba(45,50,80,.5)',linecolor:'rgba(45,50,80,.5)',zerolinecolor:'rgba(45,50,80,.5)'},
+      yaxis:{title:{text:'Month'},ticktext:MONTHS,tickvals:[1,2,3,4,5],gridcolor:'rgba(45,50,80,.5)',linecolor:'rgba(45,50,80,.5)'},
+      zaxis:{title:{text:'Performance %'},ticksuffix:'%',gridcolor:'rgba(45,50,80,.5)',range:[85,101]},
+      bgcolor:'rgba(22,25,42,.6)'
+    },
+    legend:{bgcolor:'rgba(0,0,0,0)'}
+  };
+  Plotly.newPlot('p3DHist',traces,layout,Object.assign({},PLOTLY_CONFIG,{displayModeBar:true,modeBarButtonsToRemove:['lasso2d','select2d']}));
+})();
+
+// ── Filter logic ──────────────────────────────────────────────
 function applyFilters(){
-  const site  = document.getElementById('fSite').value;
-  const mo    = parseInt(document.getElementById('fMonth').value)||0;
-  const kdi   = document.getElementById('fKDI').value;
-  const rows  = document.querySelectorAll('#mainTbody tr');
+  const site=document.getElementById('fSite').value;
+  const mo=parseInt(document.getElementById('fMonth').value)||0;
+  const kdi=document.getElementById('fKDI').value;
+  const rows=document.querySelectorAll('#mainTbody tr');
   let vis=0;
   rows.forEach(tr=>{
-    const s=tr.dataset.site, m=parseInt(tr.dataset.mo);
+    const s=tr.dataset.site,m=parseInt(tr.dataset.mo);
     let show=true;
-    if(site && s!==site) show=false;
-    if(mo   && m!==mo)   show=false;
-    if(kdi){
-      const idx={b1:4,b2:5,b3:6,b4:7,b5:8}[kdi];
-      if(idx!==undefined){const v=tr.cells[idx].textContent.trim();if(v==='-')show=false;}
-    }
+    if(site&&s!==site)show=false;
+    if(mo&&m!==mo)show=false;
+    if(kdi){const idx={b1:4,b2:5,b3:6,b4:7,b5:8}[kdi];if(idx!==undefined){const v=tr.cells[idx].textContent.trim();if(v==='-')show=false;}}
     tr.classList.toggle('hidden',!show);
     if(show)vis++;
   });
@@ -796,26 +774,22 @@ function filterTable(){
   const q=document.getElementById('tblSearch').value.toLowerCase();
   const rows=document.querySelectorAll('#mainTbody tr');
   let cnt=0;
-  rows.forEach(tr=>{
-    const match=tr.textContent.toLowerCase().includes(q);
-    tr.classList.toggle('hidden',!match);
-    if(match)cnt++;
-  });
+  rows.forEach(tr=>{const match=tr.textContent.toLowerCase().includes(q);tr.classList.toggle('hidden',!match);if(match)cnt++;});
   document.getElementById('tblCount').textContent=cnt;
 }
 
-// ── Table sorting ──────────────────────────────────────────
+// ── Table sorting ─────────────────────────────────────────────
 let sortState={col:-1,dir:1};
 function sortTable(col){
   const tbody=document.getElementById('mainTbody');
   const rows=[...tbody.querySelectorAll('tr')];
-  const dir = sortState.col===col ? -sortState.dir : 1;
+  const dir=sortState.col===col?-sortState.dir:1;
   sortState={col,dir};
   rows.sort((a,b)=>{
     const av=a.cells[col].textContent.replace(/[^0-9.-]/g,'');
     const bv=b.cells[col].textContent.replace(/[^0-9.-]/g,'');
     const an=parseFloat(av),bn=parseFloat(bv);
-    if(!isNaN(an)&&!isNaN(bn)) return (an-bn)*dir;
+    if(!isNaN(an)&&!isNaN(bn))return(an-bn)*dir;
     return a.cells[col].textContent.localeCompare(b.cells[col].textContent)*dir;
   });
   tbody.innerHTML='';

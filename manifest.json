@@ -1,0 +1,14 @@
+{
+  "name": "BEMS Dashboard — AWC",
+  "short_name": "BEMS AWC",
+  "description": "BEMS KPI Deduction Dashboard — Ambang Wira Sdn Bhd",
+  "start_url": "./mobile.html",
+  "display": "standalone",
+  "background_color": "#0f1117",
+  "theme_color": "#0f1117",
+  "orientation": "portrait",
+  "icons": [
+    {"src": "https://via.placeholder.com/192x192/4f7ef8/ffffff?text=AW", "sizes": "192x192", "type": "image/png"},
+    {"src": "https://via.placeholder.com/512x512/4f7ef8/ffffff?text=AW", "sizes": "512x512", "type": "image/png"}
+  ]
+}

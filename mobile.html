@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<meta name="theme-color" content="#0f1117"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>BEMS Mobile — AWC</title>
+<link rel="manifest" href="manifest.json"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0f1117;--surface:#16192a;--surface2:#1e2236;--border:#2d3250;
+  --primary:#4f7ef8;--success:#22c55e;--danger:#ef4444;--warn:#f59e0b;
+  --text:#e8eaf6;--muted:#8892b0;--font:'Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh;padding-bottom:80px}
+/* Header */
+.header{background:var(--surface);padding:14px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
+.hdr-logo{width:32px;height:32px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;margin-right:10px;flex-shrink:0}
+.hdr-info h1{font-size:14px;font-weight:700}
+.hdr-info p{font-size:11px;color:var(--muted)}
+.hdr-badge{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:3px 8px;font-size:10px;white-space:nowrap}
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:100}
+.nav-btn{flex:1;padding:12px 4px 8px;text-align:center;cursor:pointer;transition:.15s;font-size:10px;color:var(--muted);border:none;background:none;outline:none}
+.nav-btn.active{color:var(--primary)}
+.nav-btn svg{display:block;margin:0 auto 3px;width:22px;height:22px}
+/* Pages */
+.page{display:none;padding:16px}
+.page.active{display:block}
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
+.card-title{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+/* KPI grid */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;border-top:3px solid var(--kc,var(--primary))}
+.kpi-lbl{font-size:10px;color:var(--muted);margin-bottom:4px}
+.kpi-val{font-size:20px;font-weight:800;line-height:1.1}
+.kpi-sub{font-size:10px;color:var(--muted);margin-top:3px}
+/* Site cards */
+.site-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+.site-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.site-name{font-size:15px;font-weight:700}
+.site-badge{padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700}
+.perf-bar-bg{background:var(--surface2);border-radius:6px;height:10px;margin-top:6px}
+.perf-bar{height:10px;border-radius:6px;transition:.5s}
+.site-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(45,50,80,.4);font-size:12px}
+.site-row:last-child{border-bottom:none}
+.site-row-label{color:var(--muted)}
+/* Chart */
+.chart-wrap{position:relative;height:200px}
+/* Table */
+.mobile-table{width:100%;border-collapse:collapse;font-size:11px}
+.mobile-table th{background:var(--surface2);padding:7px 8px;text-align:left;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+.mobile-table td{padding:7px 8px;border-bottom:1px solid rgba(45,50,80,.3);white-space:nowrap}
+.tbl-scroll{overflow-x:auto;border-radius:8px;background:var(--surface)}
+/* Badge */
+.badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600}
+.b-hoag{background:#4f7ef820;color:#4f7ef8}
+.b-hsa{background:#22d3ee20;color:#22d3ee}
+.b-ikn{background:#4ade8020;color:#4ade80}
+.b-nih{background:#c084fc20;color:#c084fc}
+.b-g{background:#22c55e20;color:#22c55e}
+.b-y{background:#f59e0b20;color:#f59e0b}
+.b-r{background:#ef444420;color:#ef4444}
+/* Insights */
+.insight{background:var(--surface);border-left:3px solid var(--ic,var(--primary));border-radius:0 10px 10px 0;border:1px solid var(--border);border-left-width:3px;padding:12px;margin-bottom:10px}
+.insight-head{font-weight:700;font-size:13px;color:var(--ic,var(--primary));margin-bottom:6px}
+.insight-body{font-size:12px;color:var(--muted);line-height:1.6}
+.hl{color:var(--text);font-weight:600}
+/* Exec summary */
+.exec-stat{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(45,50,80,.4)}
+.exec-stat:last-child{border-bottom:none}
+.exec-label{font-size:12px;color:var(--muted)}
+.exec-val{font-size:12px;font-weight:600;text-align:right}
+/* Gauge mini */
+.gauge-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.gauge-mini{text-align:center;background:var(--surface2);border-radius:8px;padding:8px;min-width:70px}
+.gauge-mini-site{font-size:10px;font-weight:700;margin-top:3px}
+.gauge-mini-mo{font-size:9px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div style="display:flex;align-items:center">
+    <div class="hdr-logo">AW</div>
+    <div class="hdr-info">
+      <h1>BEMS Dashboard</h1>
+      <p>Ambang Wira Sdn Bhd</p>
+    </div>
+  </div>
+  <span class="hdr-badge">Jan–May 2026</span>
+</div>
+
+<!-- ── PAGE: Overview ── -->
+<div class="page active" id="page-overview">
+  <div class="kpi-grid">
+    <div class="kpi" style="--kc:var(--primary)"><div class="kpi-lbl">Total Reports</div><div class="kpi-val">18</div><div class="kpi-sub">4 sites · Jan–May</div></div>
+    <div class="kpi" style="--kc:var(--success)"><div class="kpi-lbl">Avg Performance</div><div class="kpi-val">96.4%</div><div class="kpi-sub">Portfolio average</div></div>
+    <div class="kpi" style="--kc:var(--danger)"><div class="kpi-lbl">Total Deductions</div><div class="kpi-val" style="font-size:16px">RM 216,500</div><div class="kpi-sub">All sites</div></div>
+    <div class="kpi" style="--kc:var(--warn)"><div class="kpi-lbl">B2 Repair Share</div><div class="kpi-val">65.9%</div><div class="kpi-sub">Dominant driver</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Performance Trend</div>
+    <div class="chart-wrap"><canvas id="mPerf"></canvas></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💰 Monthly Deductions (RM)</div>
+    <div class="chart-wrap"><canvas id="mDed"></canvas></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 KDI Deduction Share</div>
+    <div class="chart-wrap"><canvas id="mDoughnut"></canvas></div>
+  </div>
+</div>
+
+<!-- ── PAGE: Sites ── -->
+<div class="page" id="page-sites">
+  <div id="siteCards"></div>
+</div>
+
+<!-- ── PAGE: Analysis ── -->
+<div class="page" id="page-analysis">
+  <div class="card">
+    <div class="card-title">📦 KDI Stacked by Month</div>
+    <div class="chart-wrap"><canvas id="mStack"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-title">🔬 Deduction % Boxplot</div>
+    <div class="chart-wrap"><canvas id="mBox"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-title">🔁 Repetitive Assets (Top 5)</div>
+    <div class="chart-wrap"><canvas id="mRepeat"></canvas></div>
+  </div>
+</div>
+
+<!-- ── PAGE: Insights ── -->
+<div class="page" id="page-insights">
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">📋 Executive Summary</div>
+    <div class="exec-stat"><span class="exec-label">Total Portfolio Fee (5-month)</span><span class="exec-val">RM 15.83M</span></div>
+    <div class="exec-stat"><span class="exec-label">Total Deductions</span><span class="exec-val" style="color:var(--danger)">RM 216,500</span></div>
+    <div class="exec-stat"><span class="exec-label">Net Deduction Rate</span><span class="exec-val" style="color:var(--warn)">1.37%</span></div>
+    <div class="exec-stat"><span class="exec-label">Best Site</span><span class="exec-val"><span class="badge b-ikn">IKN</span> 99.69%</span></div>
+    <div class="exec-stat"><span class="exec-label">Biggest Contributor</span><span class="exec-val"><span class="badge b-nih">NIH</span> RM 159,740</span></div>
+    <div class="exec-stat"><span class="exec-label">B2 Root Cause #1</span><span class="exec-val">Equipment Failure (28%)</span></div>
+  </div>
+
+  <div class="insight" style="--ic:var(--danger)">
+    <div class="insight-head">⚠️ NIH — Prolonged B2 Deduction</div>
+    <div class="insight-body">Old WOs from 2022 (Gas Chromatography) cause recurring deductions every month. NIH contributes <span class="hl">73.8% (RM 159,740)</span> of total deductions.</div>
+  </div>
+  <div class="insight" style="--ic:var(--warn)">
+    <div class="insight-head">🔧 HOAG — Dental Equipment Chronic Failures</div>
+    <div class="insight-body">ADEC Chairs (10108, 10132) appeared 3 consecutive months. B2 peaked at RM 2,200 in Mar. <span class="hl">May recovered to 100%</span> — issue resolved.</div>
+  </div>
+  <div class="insight" style="--ic:var(--success)">
+    <div class="insight-head">⭐ IKN — Best Managed Site</div>
+    <div class="insight-body">Consistently <span class="hl">99.75–99.93%</span> performance. Strong PPM discipline. Model for other sites.</div>
+  </div>
+  <div class="insight" style="--ic:var(--primary)">
+    <div class="insight-head">📈 B2 Repair Dominates</div>
+    <div class="insight-body"><span class="hl">RM 142,610 (65.9%)</span> of all deductions. Preventive battery/component replacement programme recommended.</div>
+  </div>
+  <div class="insight" style="--ic:var(--purple)">
+    <div class="insight-head">🔴 HSA — B4 Uptime Rising</div>
+    <div class="insight-body">B4 deductions: RM 620 (Jan) → <span class="hl">RM 2,250 (Apr)</span> = 263% rise. Escalation protocol required.</div>
+  </div>
+</div>
+
+<!-- ── PAGE: Table ── -->
+<div class="page" id="page-table">
+  <div style="margin-bottom:10px">
+    <input style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-size:13px;font-family:var(--font)" id="mSearch" placeholder="Search…" oninput="mobileSearch()"/>
+  </div>
+  <div class="tbl-scroll">
+    <table class="mobile-table">
+      <thead><tr><th>Site</th><th>Month</th><th>Total Ded</th><th>Perf</th></tr></thead>
+      <tbody id="mTbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <button class="nav-btn active" onclick="goPage('overview',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview
+  </button>
+  <button class="nav-btn" onclick="goPage('sites',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Sites
+  </button>
+  <button class="nav-btn" onclick="goPage('analysis',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Analysis
+  </button>
+  <button class="nav-btn" onclick="goPage('insights',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Insights
+  </button>
+  <button class="nav-btn" onclick="goPage('table',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>Data
+  </button>
+</div>
+
+<script>
+const SUMMARY=[
+  {site:'HOAG',month:'Jan',mo:1,b1:0,b2:1140,b3:0,b4:0,b5:0,total:1140,dedPct:6.42,perf:93.58},
+  {site:'HOAG',month:'Feb',mo:2,b1:0,b2:1300,b3:0,b4:0,b5:0,total:1300,dedPct:7.32,perf:92.68},
+  {site:'HOAG',month:'Mar',mo:3,b1:0,b2:2200,b3:0,b4:0,b5:0,total:2200,dedPct:12.39,perf:87.61},
+  {site:'HOAG',month:'Apr',mo:4,b1:0,b2:200,b3:0,b4:0,b5:0,total:200,dedPct:1.13,perf:98.87},
+  {site:'HOAG',month:'May',mo:5,b1:0,b2:0,b3:0,b4:0,b5:0,total:0,dedPct:0,perf:100},
+  {site:'HSA',month:'Jan',mo:1,b1:0,b2:4610,b3:0,b4:620,b5:0,total:5230,dedPct:1.88,perf:98.12},
+  {site:'HSA',month:'Feb',mo:2,b1:0,b2:3610,b3:0,b4:890,b5:0,total:4500,dedPct:1.24,perf:98.76},
+  {site:'HSA',month:'Mar',mo:3,b1:0,b2:8670,b3:0,b4:830,b5:0,total:9500,dedPct:2.63,perf:97.37},
+  {site:'HSA',month:'Apr',mo:4,b1:0,b2:9680,b3:0,b4:2250,b5:0,total:11930,dedPct:3.30,perf:96.70},
+  {site:'IKN',month:'Jan',mo:1,b1:40,b2:2850,b3:800,b4:0,b5:0,total:3690,dedPct:0.25,perf:99.75},
+  {site:'IKN',month:'Feb',mo:2,b1:0,b2:1250,b3:0,b4:0,b5:0,total:1250,dedPct:0.09,perf:99.91},
+  {site:'IKN',month:'Mar',mo:3,b1:0,b2:500,b3:440,b4:0,b5:0,total:940,dedPct:0.07,perf:99.93},
+  {site:'IKN',month:'Apr',mo:4,b1:0,b2:1600,b3:0,b4:0,b5:0,total:1600,dedPct:0.12,perf:99.88},
+  {site:'IKN',month:'May',mo:5,b1:0,b2:13280,b3:0,b4:0,b5:0,total:13280,dedPct:1.00,perf:99.00},
+  {site:'NIH',month:'Jan',mo:1,b1:14520,b2:14520,b3:10600,b4:15120,b5:0,total:54760,dedPct:7.14,perf:92.86},
+  {site:'NIH',month:'Feb',mo:2,b1:0,b2:26980,b3:11030,b4:4870,b5:0,total:42880,dedPct:5.59,perf:94.41},
+  {site:'NIH',month:'Mar',mo:3,b1:0,b2:23630,b3:0,b4:5780,b5:0,total:29410,dedPct:3.81,perf:96.19},
+  {site:'NIH',month:'Apr',mo:4,b1:0,b2:27000,b3:10,b4:5680,b5:0,total:32690,dedPct:4.23,perf:95.77},
+];
+const SITES=['HOAG','HSA','IKN','NIH'];
+const MONTHS=['Jan','Feb','Mar','Apr','May'];
+const C={HOAG:'#4f7ef8',HSA:'#22d3ee',IKN:'#4ade80',NIH:'#c084fc'};
+const SITE_FULL={HOAG:'Hospital Orang Asli Gombak',HSA:'Hospital Shah Alam',IKN:'Institut Kanser Negara',NIH:'National Institutes of Health'};
+
+Chart.defaults.color='#8892b0';
+Chart.defaults.borderColor='#2d3250';
+Chart.defaults.font.family="'Segoe UI',system-ui,sans-serif";
+Chart.defaults.font.size=10;
+const GRID={color:'rgba(45,50,80,.5)',drawBorder:false};
+const LEGEND={labels:{boxWidth:8,padding:10,usePointStyle:true}};
+
+// Performance line
+new Chart('mPerf',{type:'line',data:{labels:MONTHS,datasets:SITES.map(s=>({
+  label:s,borderColor:C[s],backgroundColor:C[s]+'18',tension:.4,pointRadius:4,borderWidth:2,
+  data:MONTHS.map((_,i)=>{const r=SUMMARY.find(x=>x.site===s&&x.mo===i+1);return r?r.perf:null}),
+  spanGaps:false
+}))},options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:85,max:101,grid:GRID,ticks:{callback:v=>v+'%'}}},plugins:{legend:LEGEND}}});
+
+// Deduction bar
+new Chart('mDed',{type:'bar',data:{labels:MONTHS,datasets:SITES.map(s=>({
+  label:s,backgroundColor:C[s]+'cc',borderRadius:3,
+  data:MONTHS.map((_,i)=>{const r=SUMMARY.find(x=>x.site===s&&x.mo===i+1);return r?r.total:0})
+}))},options:{responsive:true,maintainAspectRatio:false,scales:{y:{grid:GRID,ticks:{callback:v=>'RM'+v.toLocaleString()}}},plugins:{legend:LEGEND}}});
+
+// Doughnut
+const kdi=[{n:'B1',v:SUMMARY.reduce((a,r)=>a+r.b1,0),c:'#ef4444'},{n:'B2',v:SUMMARY.reduce((a,r)=>a+r.b2,0),c:'#f97316'},{n:'B3',v:SUMMARY.reduce((a,r)=>a+r.b3,0),c:'#eab308'},{n:'B4',v:SUMMARY.reduce((a,r)=>a+r.b4,0),c:'#3b82f6'}];
+new Chart('mDoughnut',{type:'doughnut',data:{labels:kdi.map(x=>x.n),datasets:[{data:kdi.map(x=>x.v),backgroundColor:kdi.map(x=>x.c),hoverOffset:6}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:LEGEND}}});
+
+// Stacked
+new Chart('mStack',{type:'bar',data:{labels:MONTHS,datasets:[
+  {label:'B1',backgroundColor:'#ef4444cc',data:MONTHS.map((_,i)=>SUMMARY.filter(x=>x.mo===i+1).reduce((a,r)=>a+r.b1,0))},
+  {label:'B2',backgroundColor:'#f97316cc',data:MONTHS.map((_,i)=>SUMMARY.filter(x=>x.mo===i+1).reduce((a,r)=>a+r.b2,0))},
+  {label:'B3',backgroundColor:'#eab308cc',data:MONTHS.map((_,i)=>SUMMARY.filter(x=>x.mo===i+1).reduce((a,r)=>a+r.b3,0))},
+  {label:'B4',backgroundColor:'#3b82f6cc',data:MONTHS.map((_,i)=>SUMMARY.filter(x=>x.mo===i+1).reduce((a,r)=>a+r.b4,0))},
+]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{stacked:true},y:{stacked:true,grid:GRID,ticks:{callback:v=>'RM'+Math.round(v/1000)+'K'}}},plugins:{legend:LEGEND}}});
+
+// Boxplot (floating bars)
+const boxData=SITES.map(s=>{
+  const vals=SUMMARY.filter(r=>r.site===s).map(r=>r.dedPct).sort((a,b)=>a-b);
+  return{min:vals[0],q1:vals[Math.floor(vals.length*.25)],med:vals[Math.floor(vals.length*.5)],q3:vals[Math.floor(vals.length*.75)],max:vals[vals.length-1]};
+});
+new Chart('mBox',{type:'bar',data:{labels:SITES,datasets:[
+  {label:'Min–Q1',data:boxData.map(b=>[b.min,b.q1]),backgroundColor:'#4f7ef844',borderColor:'#4f7ef8',borderWidth:1},
+  {label:'Q1–Med',data:boxData.map(b=>[b.q1,b.med]),backgroundColor:'#22c55e66',borderColor:'#22c55e',borderWidth:1},
+  {label:'Med–Q3',data:boxData.map(b=>[b.med,b.q3]),backgroundColor:'#f59e0b66',borderColor:'#f59e0b',borderWidth:1},
+  {label:'Q3–Max',data:boxData.map(b=>[b.q3,b.max]),backgroundColor:'#ef444466',borderColor:'#ef4444',borderWidth:1},
+]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{title:{display:true,text:'Ded%'},grid:GRID,ticks:{callback:v=>v.toFixed(1)+'%'}}},plugins:{legend:LEGEND}}});
+
+// Repeat assets
+const top5=[{site:'NIH',desc:'Gas Chrom.',months:4,ded:2200},{site:'NIH',desc:'Microscope',months:4,ded:3200},{site:'NIH',desc:'Mol. Analyser',months:4,ded:1800},{site:'HOAG',desc:'Dental Chair',months:3,ded:400},{site:'IKN',desc:'Immunoassay',months:3,ded:500}];
+new Chart('mRepeat',{type:'bar',
+  data:{labels:top5.map(a=>a.site+':'+a.desc.slice(0,10)),
+  datasets:[{label:'Recurrence',data:top5.map(a=>a.months),backgroundColor:'#f59e0baa',yAxisID:'yR'},{label:'Ded(RM)',data:top5.map(a=>a.ded),backgroundColor:'#ef4444aa',yAxisID:'yD'}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,scales:{yR:{position:'top',grid:GRID},yD:{position:'bottom',grid:{display:false}}},plugins:{legend:LEGEND}}});
+
+// Site cards
+const siteCards=document.getElementById('siteCards');
+SITES.forEach(s=>{
+  const rows=SUMMARY.filter(r=>r.site===s);
+  const avg=(rows.reduce((a,r)=>a+r.perf,0)/rows.length).toFixed(1);
+  const totalDed=rows.reduce((a,r)=>a+r.total,0);
+  const perfColor=parseFloat(avg)>=98?'#22c55e':parseFloat(avg)>=95?'#4f7ef8':parseFloat(avg)>=90?'#f59e0b':'#ef4444';
+  const badgeClass=parseFloat(avg)>=98?'b-g':parseFloat(avg)>=95?'b-g':'b-y';
+  siteCards.innerHTML+=`<div class="site-card">
+    <div class="site-header">
+      <div>
+        <div class="site-name" style="color:${C[s]}">${s}</div>
+        <div style="font-size:11px;color:var(--muted)">${SITE_FULL[s]}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="site-badge badge ${badgeClass}">${avg}%</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">Avg Perf</div>
+      </div>
+    </div>
+    <div class="perf-bar-bg"><div class="perf-bar" style="width:${avg}%;background:${perfColor}"></div></div>
+    <div style="margin-top:10px">
+      ${rows.map(r=>`<div class="site-row"><span class="site-row-label">${r.month} 2026</span><span><span class="badge ${r.perf>=98?'b-g':r.perf>=95?'b-g':r.perf>=90?'b-y':'b-r'}">${r.perf.toFixed(1)}%</span></span><span style="color:var(--danger);font-size:12px">RM${r.total.toLocaleString()}</span></div>`).join('')}
+    </div>
+    <div style="margin-top:8px;padding:8px;background:var(--surface2);border-radius:8px;font-size:12px">
+      <span style="color:var(--muted)">Total Deductions: </span><span style="color:var(--danger);font-weight:700">RM ${totalDed.toLocaleString()}</span>
+    </div>
+  </div>`;
+});
+
+// Data table
+document.getElementById('mTbody').innerHTML=SUMMARY.map(r=>`<tr>
+  <td><span class="badge b-${r.site.toLowerCase()}">${r.site}</span></td>
+  <td>${r.month}</td>
+  <td style="color:var(--danger)">RM${r.total.toLocaleString()}</td>
+  <td><span class="badge ${r.perf>=98?'b-g':r.perf>=95?'b-g':r.perf>=90?'b-y':'b-r'}">${r.perf.toFixed(1)}%</span></td>
+</tr>`).join('');
+
+// Navigation
+function goPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function mobileSearch(){
+  const q=document.getElementById('mSearch').value.toLowerCase();
+  document.querySelectorAll('#mTbody tr').forEach(tr=>{
+    tr.style.display=tr.textContent.toLowerCase().includes(q)?'':'none';
+  });
+}
+</script>
+</body>
+</html>
